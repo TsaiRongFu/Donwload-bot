@@ -62,6 +62,12 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     UserMessage = event.message.text
+    UserMessageSplitCheck = False
+    try:
+        UserMessageSplit = UserMessage.split(str="-")
+        UserMessageSplitCheck = True
+    except:
+        pass
 #    time.sleep(30)
     reply_text1 = "1234"
     reply_text = "123"
@@ -73,7 +79,7 @@ def handle_message(event):
 #    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), sticker_message ,TextSendMessage(text="$Eggs$", emojis=[emoji,emoji1])])
 #    多個
     emoji = [{"index": 0, "productId": "5ac1bfd5040ab15980c9b435", "emojiId": "001"}]
-#   line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), sticker_message ,TextSendMessage(text="$Eggs", emojis=emoji)])
+#    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), sticker_message ,TextSendMessage(text="$Eggs", emojis=emoji)])
 #    多訊息Line最多上限5則
 #    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), TextSendMessage(text= reply_text1)])
 #    TextSendMessage(text= replyMsg)
@@ -213,15 +219,26 @@ def handle_message(event):
 #        }
 #    )
 #    line_bot_api.reply_message(event.reply_token, flex_message)
-    InsertToDatabase(UserMessage)
-
-def InsertToDatabase(text):
-    conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
-    cur = conn.cursor()
-    cur.execute("INSERT INTO membertable(membername, membernumber) VALUES('YES', '" + text + "')")
-    conn.commit()
-    cur.close()
+    if (UserMessageSplitCheck = True):
+        if (UserMessageSplit[0] == "新增會員"):
+            ReturnMessage = InsertToDatabase(event,UserMessage)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    else:
+        ReturnMessage = "請依照格式輸入！！"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     
+
+def InsertToDatabase(event,InsertArray):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[0] +"', '" + InsertArray[1] + "', '" + InsertArray[2] + "', '" + InsertArray[3] + "')")
+        conn.commit()
+        cur.close()
+        InsertSuccessMessage = "會員編號：" + str(InsertArray[1]) + "，新增成功！！"
+        return InsertSuccessMessage
+    except Exception as InsertErrorMessage:
+        return str(InsertErrorMessage)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
