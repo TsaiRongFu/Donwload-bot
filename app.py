@@ -64,11 +64,13 @@ def handle_message(event):
     UserMessage = event.message.text
     UserMessageSplitCheck = False
     try:
-        UserMessageSplit = UserMessage.split(str="-")
+        UserMessageSplit = str(UserMessage).split("|")
         UserMessageSplitCheck = True
-    except:
-        pass
+    except Exception as text1:
+        tteexxtt =  str(text1)
 #    time.sleep(30)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text = tteexxtt))
+
     reply_text1 = "1234"
     reply_text = "123"
 
@@ -219,13 +221,14 @@ def handle_message(event):
 #        }
 #    )
 #    line_bot_api.reply_message(event.reply_token, flex_message)
-    if (UserMessageSplitCheck = True):
-        if (UserMessageSplit[0] == "新增會員"):
-            ReturnMessage = InsertToDatabase(event,UserMessage)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
-    else:
-        ReturnMessage = "請依照格式輸入！！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    
+    # if (UserMessageSplitCheck == True):
+    #     if (UserMessageSplit[0] == "新增會員"):
+    #         ReturnMessage = InsertToDatabase(event,UserMessageSplit)
+    #         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    # else:
+    #     ReturnMessage = "請依照格式輸入！！"
+    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     
 
 def InsertToDatabase(event,InsertArray):
@@ -244,4 +247,3 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
     #ssl_context=('cert.pem', 'key.pem')
-
