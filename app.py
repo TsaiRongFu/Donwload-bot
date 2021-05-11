@@ -226,6 +226,7 @@ def handle_message(event):
     if (UserMessageSplitCheck == True):
         if (UserMessageSplit[0] == "新增會員"):
             ReturnMessage = InsertToDatabase(UserMessageSplit)
+            print("success")
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
@@ -266,7 +267,10 @@ def SearchToDatabase():
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("SELECT * FROM membertable")
-        SerachData = cur.fetchall()
+        rows = cur.fetchall()
+        SerachData = ""
+        for row in rows:
+            SerachData = SerachData + str(row) + "\n\n"
         conn.commit()
         cur.close()
         SearchSuccessMessage = SerachData
@@ -278,6 +282,3 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
     #ssl_context=('cert.pem', 'key.pem')
-
-
-
