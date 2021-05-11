@@ -6,7 +6,8 @@ cur = conn.cursor()
 # select 
 # cur.execute("SELECT * FROM membertable")
 # rows = cur.fetchall()
-# print(rows)
+# for row in rows:
+#     print(str(row))
 
 # INSERT data
 # cur.execute("INSERT INTO membertable(membername, membernumber) VALUES('YES', '001')")
