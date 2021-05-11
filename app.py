@@ -65,11 +65,12 @@ def handle_message(event):
     UserMessageSplitCheck = False
     try:
         UserMessageSplit = str(UserMessage).split("|")
-        UserMessageSplitCheck = True
-    except Exception as text1:
-        tteexxtt =  str(text1)
+        if(len(UserMessageSplit) >=2):
+            UserMessageSplitCheck = True
+    except Exception as SplitError:
+        pass
 #    time.sleep(30)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text = tteexxtt))
+
 
     reply_text1 = "1234"
     reply_text = "123"
@@ -222,20 +223,25 @@ def handle_message(event):
 #    )
 #    line_bot_api.reply_message(event.reply_token, flex_message)
     
-    # if (UserMessageSplitCheck == True):
-    #     if (UserMessageSplit[0] == "新增會員"):
-    #         ReturnMessage = InsertToDatabase(event,UserMessageSplit)
-    #         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
-    # else:
-    #     ReturnMessage = "請依照格式輸入！！"
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
-    
+    if (UserMessageSplitCheck == True):
+        if (UserMessageSplit[0] == "新增會員"):
+            ReturnMessage = InsertToDatabase(UserMessageSplit)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    elif (UserMessage == "Delete" or UserMessage == "刪除"):
+        ReturnMessage = DeleteToDatabase()
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    elif (UserMessage == "收尋" or UserMessage == "Search"):
+        ReturnMessage = SearchToDatabase()
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    else:
+        ReturnMessage = "請依照格式輸入！！"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
 
-def InsertToDatabase(event,InsertArray):
+def InsertToDatabase(InsertArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
-        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[0] +"', '" + InsertArray[1] + "', '" + InsertArray[2] + "', '" + InsertArray[3] + "')")
+        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[1] +"', '" + InsertArray[2] + "', '" + InsertArray[3] + "', '" + InsertArray[4] + "')")
         conn.commit()
         cur.close()
         InsertSuccessMessage = "會員編號：" + str(InsertArray[1]) + "，新增成功！！"
@@ -243,7 +249,35 @@ def InsertToDatabase(event,InsertArray):
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
 
+def DeleteToDatabase():
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("DELETE from membertable")
+        conn.commit()
+        cur.close()
+        DeleteSuccessMessage = "全數刪除成功！！"
+        return DeleteSuccessMessage
+    except Exception as DeleteErrorMessage:
+        return str(DeleteErrorMessage)
+
+def SearchToDatabase(): 
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM membertable")
+        SerachData = cur.fetchall()
+        conn.commit()
+        cur.close()
+        SearchSuccessMessage = SerachData
+        return SearchSuccessMessage
+    except Exception as SearchErrorMessage:
+        return str(SearchErrorMessage)
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
     #ssl_context=('cert.pem', 'key.pem')
+
+
+
