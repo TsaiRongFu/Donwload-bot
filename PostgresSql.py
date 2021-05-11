@@ -26,9 +26,6 @@ cur = conn.cursor()
 # Delete
 # cur.execute("DELETE from membertable where ID=2")
 
-cur.execute("SELECT * FROM membertable")
-SerachData = cur.fetchall()
-print(SerachData)
 conn.commit()
 cur.close()
 
