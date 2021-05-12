@@ -62,12 +62,20 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     UserMessage = event.message.text
-    UserMessageSplitCheck = False
+    UserMessageAddSplitCheck = False
+    UserMessageSearchSplitCheck = False
     try:
-        UserMessageSplit = str(UserMessage).split("|")
-        if(len(UserMessageSplit) >=2):
-            UserMessageSplitCheck = True
-    except Exception as SplitError:
+        UserMessageAddSplit = str(UserMessage).split("|")
+        if(len(UserMessageAddSplit) >=2):
+            UserMessageAddSplitCheck = True
+    except Exception as AddSplitError:
+        pass
+
+    try:
+        UserMessageSearchSplit = str(UserMessage).split("-")
+        if(len(UserMessageSearchSplit) >=2):
+            UserMessageSearchSplitCheck = True
+    except Exception as SearchSplitError:
         pass
 #    time.sleep(30)
 
@@ -90,9 +98,13 @@ def handle_message(event):
 
 #    line_bot_api.reply_message(event.reply_token, flex_message)
     
-    if (UserMessageSplitCheck == True):
-        if (UserMessageSplit[0] == "新增會員"):
-            ReturnMessage = InsertToDatabase(UserMessageSplit)
+    if (UserMessageAddSplitCheck == True):
+        if (UserMessageAddSplit[0] == "新增會員"):
+            ReturnMessage = InsertToDatabase(UserMessageAddSplit)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+    elif (UserMessageSearchSplitCheck == True):
+        if (UserMessageAddSplit[0] == "收尋"):
+            ReturnMessage = InsertToDatabase(UserMessageAddSplit)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
