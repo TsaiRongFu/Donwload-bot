@@ -87,152 +87,18 @@ def handle_message(event):
 #    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), TextSendMessage(text= reply_text1)])
 #    TextSendMessage(text= replyMsg)
 #    GoogleWeb = "https://www.google.com/"
-#    flex_message = FlexSendMessage(
-#        alt_text='hello',
-#        contents={
-#            "type": "bubble",
-#            "hero": {
-#                "type": "image",
-#                "url": "https://lh3.googleusercontent.com/fife/ABSRlIokHUI0NDnw524TNzlQqWC5jBZzfi_ssEAC5tmZWTGb08HbsHUFM_zrH05tNdQqbxEPHtxoLwsmuNxroTd1j0CjbKWz6OQUxsXJ3ZHBVnjTgCtB6TR2FcE6itppuSQCKJQLpWzQdAKC77zL4LY18zg9sS-Abp0qdMZ2hZ0Y6TpUNJH_VfxnOVA5MBSjgY7q78LxJ2bq9q2N67HOR6C3uXO0mubc5WjjyRTxpurcE2X-H59p2cJVYCR9DnG4hoe6byMyM8IYUst6v2vestukNwYJN6iwrLCFuVomCdxbzWm50DSY1lVMB-H1v_4Udp_6Hj5kIovtFrxdb8qgTe1wb8E_LrbhEOFqWe6izlceVja9nrWYU4Cg86TlCc4R3VdLdqUufwQeBPvaq5GIHWZ4wSrtJ1a_MYvlsi6SgOR3lB4f8a142sQO5fbpTSIHjj8Hl-tTeFwYjpVAtjkiXI8bpX1ouxFZ5dyuqmGZBUjAc3EOja2m3Q2Z10PXW3NdyLUHDEPxsHeLQIbIVE6Gr0Gq_ACBZuQAL2ju2V9w5hnn0kHKFxfC-EynUn3zupc3UwEhF_Yeqn8bPTl5gmRUuxigznwRgfXv5gtCLhKQNOBZaS1fJ5odrpCAPuf4wDJDsR80dMs1ffkQS-70Q59SPK1yRfSHvZP_ats0ZPdeUY0losJDX9kEphc_3EwD76eSp9C6_jlbsHE3xqgBJ_SmpdtB1dw4VxZtAIkbJhc=w1920-h969-ft",
-#                "size": "full",
-#                "aspectRatio": "20:13",
-#                "aspectMode": "cover",
-#                "action": {
-#                    "type": "uri",
-#                    "uri": GoogleWeb
-#                }
-#            },
-#            "body": {
-#                "type": "box",
-#                "layout": "vertical",
-#                "contents": [
-#                    {
-#                        "type": "text",
-#                        "text": "會籍編號：P077",
-#                        "weight": "bold",
-#                        "size": "xl"
-#                    },
-#                    {
-#                        "type": "box",
-#                        "layout": "baseline",
-#                        "margin": "md",
-#                        "contents": [
-#                            {
-#                                "type": "text",
-#                                "text": "會員票種：優待票、限時票、一般票",
-#                                "contents": [
-#                                    {
-#                                        "type": "span",
-#                                        "text": "會員票種："
-#                                    },
-#                                    {
-#                                        "type": "span",
-#                                        "text": "優待票、限時票、一般票",
-#                                        "weight": "bold",
-#                                        "style": "normal",
-#                                        "size": "lg",
-#                                        "color": "#FFA500"
-#                                    }
-#                                ]
-#                            }
-#                        ]
-#                    },
-#                    {
-#                        "type": "box",
-#                        "layout": "vertical",
-#                        "margin": "lg",
-#                        "spacing": "sm",
-#                        "contents": [
-#                            {
-#                                "type": "box",
-#                                "layout": "baseline",
-#                                "spacing": "sm",
-#                                "contents": [
-#                                    {
-#                                        "type": "text",
-#                                        "text": "進場：",
-#                                        "color": "#aaaaaa",
-#                                        "size": "sm",
-#                                        "flex": 1
-#                                    },
-#                                    {
-#                                        "type": "text",
-#                                        "text": "2021-05-02 14:01:20",
-#                                        "wrap": True,
-#                                        "color": "#666666",
-#                                        "size": "sm",
-#                                        "flex": 5
-#                                    }
-#                                ]
-#                            },
-#                            {
-#                                "type": "box",
-#                                "layout": "baseline",
-#                                "spacing": "sm",
-#                                "contents": [
-#                                    {
-#                                        "type": "text",
-#                                        "text": "離場：",
-#                                        "color": "#aaaaaa",
-#                                        "size": "sm",
-#                                        "flex": 1
-#                                    },
-#                                    {
-#                                        "type": "text",
-#                                        "text": "2021-05-02 15:30:14",
-#                                        "wrap": True,
-#                                        "color": "#666666",
-#                                        "size": "sm",
-#                                        "flex": 5
-#                                    }
-#                                ]
-#                            }
-#                        ]
-#                    }
-#                ]
-#            },
-#            "footer": {
-#                "type": "box",
-#                "layout": "vertical",
-#                "spacing": "sm",
-#                "contents": [
-#                    {
-#                        "type": "button",
-#                        "style": "link",
-#                        "height": "sm",
-#                        "action": {
-#                            "type": "uri",
-#                            "label": "進場",
-#                            "uri": "https://www.google.com/"
-#                        }
-#                    },
-#                    {
-#                        "type": "button",
-#                        "style": "link",
-#                        "height": "sm",
-#                        "action": {
-#                            "type": "uri",
-#                            "label": "離場",
-#                            "uri": "https://www.google.com/"
-#                        }
-#                    },
-#                ],
-#                "flex": 0
-#            }
-#        }
-#    )
+
 #    line_bot_api.reply_message(event.reply_token, flex_message)
     
     if (UserMessageSplitCheck == True):
         if (UserMessageSplit[0] == "新增會員"):
             ReturnMessage = InsertToDatabase(UserMessageSplit)
-            print("success")
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     elif (UserMessage == "收尋" or UserMessage == "Search"):
-        ReturnMessage = SearchToDatabase()
+        ReturnMessage = SearchInDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
@@ -262,7 +128,7 @@ def DeleteToDatabase():
     except Exception as DeleteErrorMessage:
         return str(DeleteErrorMessage)
 
-def SearchToDatabase(): 
+def SearchInDatabase(): 
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
@@ -277,6 +143,154 @@ def SearchToDatabase():
         return SearchSuccessMessage
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
+
+def SearchPersonalInDatabase():
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM membertable")
+        conn.commit()
+        cur.close()
+        SearchSuccessMessage = SerachData
+        return SearchSuccessMessage
+    except Exception as SearchErrorMessage:
+        return str(SearchErrorMessage)
+
+def DataInsertToFlexSendMessage():
+    flex_message = FlexSendMessage(
+        alt_text='hello',
+        contents={
+            "type": "bubble",
+            "hero": {
+                "type": "image",
+                "url": "https://lh3.googleusercontent.com/fife/ABSRlIokHUI0NDnw524TNzlQqWC5jBZzfi_ssEAC5tmZWTGb08HbsHUFM_zrH05tNdQqbxEPHtxoLwsmuNxroTd1j0CjbKWz6OQUxsXJ3ZHBVnjTgCtB6TR2FcE6itppuSQCKJQLpWzQdAKC77zL4LY18zg9sS-Abp0qdMZ2hZ0Y6TpUNJH_VfxnOVA5MBSjgY7q78LxJ2bq9q2N67HOR6C3uXO0mubc5WjjyRTxpurcE2X-H59p2cJVYCR9DnG4hoe6byMyM8IYUst6v2vestukNwYJN6iwrLCFuVomCdxbzWm50DSY1lVMB-H1v_4Udp_6Hj5kIovtFrxdb8qgTe1wb8E_LrbhEOFqWe6izlceVja9nrWYU4Cg86TlCc4R3VdLdqUufwQeBPvaq5GIHWZ4wSrtJ1a_MYvlsi6SgOR3lB4f8a142sQO5fbpTSIHjj8Hl-tTeFwYjpVAtjkiXI8bpX1ouxFZ5dyuqmGZBUjAc3EOja2m3Q2Z10PXW3NdyLUHDEPxsHeLQIbIVE6Gr0Gq_ACBZuQAL2ju2V9w5hnn0kHKFxfC-EynUn3zupc3UwEhF_Yeqn8bPTl5gmRUuxigznwRgfXv5gtCLhKQNOBZaS1fJ5odrpCAPuf4wDJDsR80dMs1ffkQS-70Q59SPK1yRfSHvZP_ats0ZPdeUY0losJDX9kEphc_3EwD76eSp9C6_jlbsHE3xqgBJ_SmpdtB1dw4VxZtAIkbJhc=w1920-h969-ft",
+                "size": "full",
+                "aspectRatio": "20:13",
+                "aspectMode": "cover",
+                "action": {
+                    "type": "uri",
+                    "uri": "https://www.google.com/"
+                }
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "會籍編號：P077",
+                        "weight": "bold",
+                        "size": "xl"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "baseline",
+                        "margin": "md",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "會員票種：優待票、限時票、一般票",
+                                "contents": [
+                                    {
+                                        "type": "span",
+                                        "text": "會員票種："
+                                    },
+                                    {
+                                        "type": "span",
+                                        "text": "優待票、限時票、一般票",
+                                        "weight": "bold",
+                                        "style": "normal",
+                                        "size": "lg",
+                                        "color": "#FFA500"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "margin": "lg",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "進場：",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "2021-05-02 14:01:20",
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "離場：",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 1
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "2021-05-02 15:30:14",
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "footer": {
+                "type": "box",
+                "layout": "vertical",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "button",
+                        "style": "link",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "進場",
+                            "uri": "https://www.google.com/"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "style": "link",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "離場",
+                            "uri": "https://www.google.com/"
+                        }
+                    },
+                ],
+                "flex": 0
+            }
+        }
+    )
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
