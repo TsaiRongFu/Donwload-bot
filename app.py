@@ -103,9 +103,11 @@ def handle_message(event):
             ReturnMessage = InsertToDatabase(UserMessageAddSplit)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
     elif (UserMessageSearchSplitCheck == True):
-        if (UserMessageAddSplit[0] == "收尋"):
-            ReturnMessage = InsertToDatabase(UserMessageAddSplit)
+        if (UserMessageSearchSplit[0] == "收尋"):
+            ReturnMessage = SearchPersonalNameInDatabase(UserMessageSearchSplit)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+            print("456")
+        print("123")
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
@@ -156,14 +158,17 @@ def SearchInDatabase():
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
 
-def SearchPersonalInDatabase():
+def SearchPersonalNameInDatabase(SearchArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
-        cur.execute("SELECT * FROM membertable")
+        cur.execute("SELECT * FROM membertable WHERE membername = '" + SearchArray[1] + "'")
+        rows = cur.fetchall()
+        for row in rows:
+            SerachData = str(row)
         conn.commit()
         cur.close()
-        SearchSuccessMessage = SerachData
+        SearchSuccessMessage = str(SerachData)
         return SearchSuccessMessage
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
