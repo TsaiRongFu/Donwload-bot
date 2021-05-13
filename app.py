@@ -66,19 +66,18 @@ def handle_message(event):
     UserMessageSearchSplitCheck = False
     try:
         UserMessageAddSplit = str(UserMessage).split("|")
-        if(len(UserMessageAddSplit) >=2):
+        if(len(UserMessageAddSplit) >= 2):
             UserMessageAddSplitCheck = True
     except Exception as AddSplitError:
         pass
 
     try:
         UserMessageSearchSplit = str(UserMessage).split("-")
-        if(len(UserMessageSearchSplit) >=2):
+        if(len(UserMessageSearchSplit) >= 2):
             UserMessageSearchSplitCheck = True
     except Exception as SearchSplitError:
         pass
 #    time.sleep(30)
-
 
     reply_text1 = "1234"
     reply_text = "123"
@@ -97,32 +96,33 @@ def handle_message(event):
 #    GoogleWeb = "https://www.google.com/"
 
 #    line_bot_api.reply_message(event.reply_token, flex_message)
-    
+
     if (UserMessageAddSplitCheck == True):
         if (UserMessageAddSplit[0] == "新增會員"):
             ReturnMessage = InsertToDatabase(UserMessageAddSplit)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     elif (UserMessageSearchSplitCheck == True):
         if (UserMessageSearchSplit[0] == "收尋"):
             ReturnMessage = SearchPersonalNameInDatabase(UserMessageSearchSplit)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
-            print("456")
-        print("123")
+            #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(ReturnMessage)))
+            line_bot_api.reply_message(event.reply_token, ReturnMessage)
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     elif (UserMessage == "收尋" or UserMessage == "Search"):
         ReturnMessage = SearchInDatabase()
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = ReturnMessage))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+
 
 def InsertToDatabase(InsertArray):
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
-        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[1] +"', '" + InsertArray[2] + "', '" + InsertArray[3] + "', '" + InsertArray[4] + "')")
+        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[1] + "', '" + InsertArray[2] + "', '" + InsertArray[3] + "', '" + InsertArray[4] + "')")
         conn.commit()
         cur.close()
         InsertSuccessMessage = "會員編號：" + str(InsertArray[1]) + "，新增成功！！"
@@ -130,9 +130,11 @@ def InsertToDatabase(InsertArray):
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
 
+
 def DeleteToDatabase():
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("DELETE from membertable")
         conn.commit()
@@ -142,9 +144,11 @@ def DeleteToDatabase():
     except Exception as DeleteErrorMessage:
         return str(DeleteErrorMessage)
 
-def SearchInDatabase(): 
+
+def SearchInDatabase():
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("SELECT * FROM membertable")
         rows = cur.fetchall()
@@ -153,34 +157,38 @@ def SearchInDatabase():
             SerachData = SerachData + str(row) + "\n\n"
         conn.commit()
         cur.close()
+        DataInsertToFlexSendMessage
         SearchSuccessMessage = SerachData
         return SearchSuccessMessage
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
 
+
 def SearchPersonalNameInDatabase(SearchArray):
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("SELECT * FROM membertable WHERE membername = '" + SearchArray[1] + "'")
-        rows = cur.fetchall()
-        for row in rows:
-            SerachData = str(row)
+        SerachPersonalNameData = cur.fetchall()
         conn.commit()
         cur.close()
-        SearchSuccessMessage = str(SerachData)
-        return SearchSuccessMessage
+        SearchPersonalNameSuccessMessage = DataInsertToFlexSendMessage(SerachPersonalNameData)
+        print("4")
+        return SearchPersonalNameSuccessMessage
     except Exception as SearchErrorMessage:
+        print("5")
         return str(SearchErrorMessage)
 
-def DataInsertToFlexSendMessage():
+
+def DataInsertToFlexSendMessage(DataList):
     flex_message = FlexSendMessage(
         alt_text='hello',
         contents={
             "type": "bubble",
             "hero": {
                 "type": "image",
-                "url": "https://lh3.googleusercontent.com/fife/ABSRlIokHUI0NDnw524TNzlQqWC5jBZzfi_ssEAC5tmZWTGb08HbsHUFM_zrH05tNdQqbxEPHtxoLwsmuNxroTd1j0CjbKWz6OQUxsXJ3ZHBVnjTgCtB6TR2FcE6itppuSQCKJQLpWzQdAKC77zL4LY18zg9sS-Abp0qdMZ2hZ0Y6TpUNJH_VfxnOVA5MBSjgY7q78LxJ2bq9q2N67HOR6C3uXO0mubc5WjjyRTxpurcE2X-H59p2cJVYCR9DnG4hoe6byMyM8IYUst6v2vestukNwYJN6iwrLCFuVomCdxbzWm50DSY1lVMB-H1v_4Udp_6Hj5kIovtFrxdb8qgTe1wb8E_LrbhEOFqWe6izlceVja9nrWYU4Cg86TlCc4R3VdLdqUufwQeBPvaq5GIHWZ4wSrtJ1a_MYvlsi6SgOR3lB4f8a142sQO5fbpTSIHjj8Hl-tTeFwYjpVAtjkiXI8bpX1ouxFZ5dyuqmGZBUjAc3EOja2m3Q2Z10PXW3NdyLUHDEPxsHeLQIbIVE6Gr0Gq_ACBZuQAL2ju2V9w5hnn0kHKFxfC-EynUn3zupc3UwEhF_Yeqn8bPTl5gmRUuxigznwRgfXv5gtCLhKQNOBZaS1fJ5odrpCAPuf4wDJDsR80dMs1ffkQS-70Q59SPK1yRfSHvZP_ats0ZPdeUY0losJDX9kEphc_3EwD76eSp9C6_jlbsHE3xqgBJ_SmpdtB1dw4VxZtAIkbJhc=w1920-h969-ft",
+                "url": DataList[0][2],
                 "size": "full",
                 "aspectRatio": "20:13",
                 "aspectMode": "cover",
@@ -195,9 +203,18 @@ def DataInsertToFlexSendMessage():
                 "contents": [
                     {
                         "type": "text",
-                        "text": "會籍編號：P077",
                         "weight": "bold",
-                        "size": "xl"
+                        "size": "xl",
+                        "contents": [
+                            {
+                                "type": "span",
+                                "text": "會籍編號："
+                            },
+                            {
+                                "type": "span",
+                                "text": DataList[0][1]
+                            }
+                        ]
                     },
                     {
                         "type": "box",
@@ -214,7 +231,7 @@ def DataInsertToFlexSendMessage():
                                     },
                                     {
                                         "type": "span",
-                                        "text": "優待票、限時票、一般票",
+                                        "text": DataList[0][3],
                                         "weight": "bold",
                                         "style": "normal",
                                         "size": "lg",
@@ -308,8 +325,11 @@ def DataInsertToFlexSendMessage():
             }
         }
     )
+    return flex_message
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
-    #ssl_context=('cert.pem', 'key.pem')
+    # ssl_context=('cert.pem', 'key.pem')
+
