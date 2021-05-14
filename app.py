@@ -96,16 +96,25 @@ def handle_message(event):
 #    GoogleWeb = "https://www.google.com/"
 
 #    line_bot_api.reply_message(event.reply_token, flex_message)
-
-    if (UserMessageAddSplitCheck == True):
+    if (str(UserMessage)[0].upper() == "P" and str(UserMessage)[1:len(str(UserMessage))].isdigit() == True):
+        ReturnMessage = SearchPersonalNumberInDatabase(UserMessage.upper())
+        if (str(ReturnMessage) == "[]" or str(ReturnMessage) == "list index out of range"):
+            NullErrorMessage = "尚未在資料庫收尋到相關資料！"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text= NullErrorMessage))
+        else:
+            line_bot_api.reply_message(event.reply_token, ReturnMessage)
+    elif (UserMessageAddSplitCheck == True):
         if (UserMessageAddSplit[0] == "新增會員"):
             ReturnMessage = InsertToDatabase(UserMessageAddSplit)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     elif (UserMessageSearchSplitCheck == True):
         if (UserMessageSearchSplit[0] == "收尋"):
             ReturnMessage = SearchPersonalNameInDatabase(UserMessageSearchSplit)
-            #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(ReturnMessage)))
-            line_bot_api.reply_message(event.reply_token, ReturnMessage)
+            if (str(ReturnMessage) == "[]" or str(ReturnMessage) == "list index out of range"):
+                NullErrorMessage = "尚未在資料庫收尋到相關資料！"
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(text= NullErrorMessage))
+            else:
+                line_bot_api.reply_message(event.reply_token, ReturnMessage)
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
@@ -133,8 +142,7 @@ def InsertToDatabase(InsertArray):
 
 def DeleteToDatabase():
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
-            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("DELETE from membertable")
         conn.commit()
@@ -147,8 +155,7 @@ def DeleteToDatabase():
 
 def SearchInDatabase():
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
-            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("SELECT * FROM membertable")
         rows = cur.fetchall()
@@ -166,20 +173,29 @@ def SearchInDatabase():
 
 def SearchPersonalNameInDatabase(SearchArray):
     try:
-        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
-            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         cur.execute("SELECT * FROM membertable WHERE membername = '" + SearchArray[1] + "'")
         SerachPersonalNameData = cur.fetchall()
         conn.commit()
         cur.close()
         SearchPersonalNameSuccessMessage = DataInsertToFlexSendMessage(SerachPersonalNameData)
-        print("4")
         return SearchPersonalNameSuccessMessage
     except Exception as SearchErrorMessage:
-        print("5")
         return str(SearchErrorMessage)
 
+def SearchPersonalNumberInDatabase(membernumber):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM membertable WHERE membernumber = '" + membernumber + "'")
+        SerachPersonalNumberData = cur.fetchall()
+        conn.commit()
+        cur.close()
+        SearchPersonalNumberSuccessMessage = DataInsertToFlexSendMessage(SerachPersonalNumberData)
+        return SearchPersonalNumberSuccessMessage
+    except Exception as SearchErrorMessage:
+        return str(SearchErrorMessage)
 
 def DataInsertToFlexSendMessage(DataList):
     flex_message = FlexSendMessage(
@@ -332,4 +348,3 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
     # ssl_context=('cert.pem', 'key.pem')
-
