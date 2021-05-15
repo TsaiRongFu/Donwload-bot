@@ -201,108 +201,170 @@ def DataInsertToFlexSendMessage(DataList):
     flex_message = FlexSendMessage(
         alt_text='hello',
         contents={
-            "type": "bubble",
+            "type": "bubble", 
             "hero": {
-                "type": "image",
-                "url": DataList[0][2],
-                "size": "full",
-                "aspectRatio": "20:13",
-                "aspectMode": "cover",
+                "type": "image", 
+                "url": DataList[0][2], 
+                "size": "full", 
+                "aspectRatio": "20:13", 
+                "aspectMode": "cover", 
                 "action": {
-                    "type": "uri",
+                    "type": "uri", 
                     "uri": "https://www.google.com/"
                 }
-            },
+            }, 
             "body": {
-                "type": "box",
-                "layout": "vertical",
+                "type": "box", 
+                "layout": "vertical", 
                 "contents": [
                     {
-                        "type": "text",
-                        "weight": "bold",
-                        "size": "xl",
+                        "type": "text", 
+                        "weight": "bold", 
+                        "size": "xl", 
                         "contents": [
                             {
-                                "type": "span",
+                                "type": "span", 
                                 "text": "會籍編號："
-                            },
+                            }, 
                             {
-                                "type": "span",
+                                "type": "span", 
                                 "text": DataList[0][1]
                             }
                         ]
-                    },
+                    }, 
                     {
-                        "type": "box",
-                        "layout": "baseline",
-                        "margin": "md",
+                        "type": "box", 
+                        "layout": "baseline", 
+                        "margin": "md", 
                         "contents": [
                             {
-                                "type": "text",
-                                "text": "會員票種：優待票、限時票、一般票",
+                                "type": "text", 
+                                "text": "會員票種：優待票、限時票、一般票", 
                                 "contents": [
                                     {
-                                        "type": "span",
+                                        "type": "span", 
                                         "text": "會員票種："
-                                    },
+                                    }, 
                                     {
-                                        "type": "span",
+                                        "type": "span", 
                                         "text": DataList[0][3],
-                                        "weight": "bold",
-                                        "style": "normal",
-                                        "size": "lg",
+                                        "weight": "bold", 
+                                        "style": "normal", 
+                                        "size": "lg", 
                                         "color": "#FFA500"
                                     }
                                 ]
                             }
                         ]
-                    },
+                    }, 
                     {
-                        "type": "box",
-                        "layout": "vertical",
-                        "margin": "lg",
-                        "spacing": "sm",
+                        "type": "box", 
+                        "layout": "baseline", 
+                        "margin": "md", 
                         "contents": [
                             {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
+                                "type": "text", 
+                                "text": "會員名稱", 
                                 "contents": [
                                     {
-                                        "type": "text",
-                                        "text": "進場：",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 1
-                                    },
+                                        "type": "span", 
+                                        "text": "會員名稱："
+                                    }, 
                                     {
-                                        "type": "text",
-                                        "text": "2021-05-02 14:01:20",
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
+                                        "type": "span", 
+                                        "text": DataList[0][0]
+                                    }
+                                ]
+                            }
+                        ]
+                    }, 
+                    {
+                        "type": "box", 
+                        "layout": "vertical", 
+                        "margin": "lg", 
+                        "spacing": "sm", 
+                        "contents": [
+                            {
+                                "type": "box", 
+                                "layout": "baseline", 
+                                "contents": [
+                                    {
+                                        "type": "text", 
+                                        "text": "起始日：", 
+                                        "size": "sm", 
+                                        "color": "#aaaaaa"
+                                    }, 
+                                    {
+                                        "type": "text", 
+                                        "text": "2021-05-01", 
+                                        "flex": 3, 
+                                        "size": "sm", 
+                                        "color": "#666666"
+                                    }
+                                ]
+                            }, 
+                            {
+                                "type": "box", 
+                                "layout": "baseline", 
+                                "contents": [
+                                    {
+                                        "type": "text", 
+                                        "text": "到期日：", 
+                                        "size": "sm", 
+                                        "color": "#aaaaaa"
+                                    }, 
+                                    {
+                                        "type": "text", 
+                                        "text": "2022-05-01", 
+                                        "flex": 3, 
+                                        "size": "sm", 
+                                        "color": "#666666"
+                                    }
+                                ]
+                            }, 
+                            {
+						        "type": "separator"
+					        },
+                            {
+                                "type": "box", 
+                                "layout": "baseline", 
+                                "spacing": "sm", 
+                                "contents": [
+                                    {
+                                        "type": "text", 
+                                        "text": "進場：", 
+                                        "color": "#aaaaaa", 
+                                        "size": "sm", 
+                                        "flex": 1
+                                    }, 
+                                    {
+                                        "type": "text", 
+                                        "text": "2021-05-02 14:01:20", 
+                                        "wrap": True, 
+                                        "color": "#666666", 
+                                        "size": "sm", 
                                         "flex": 5
                                     }
                                 ]
-                            },
+                            }, 
                             {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
+                                "type": "box", 
+                                "layout": "baseline", 
+                                "spacing": "sm", 
                                 "contents": [
                                     {
-                                        "type": "text",
-                                        "text": "離場：",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
+                                        "type": "text", 
+                                        "text": "離場：", 
+                                        "color": "#aaaaaa", 
+                                        "size": "sm", 
                                         "flex": 1
-                                    },
+                                    }, 
                                     {
-                                        "type": "text",
-                                        "text": "2021-05-02 15:30:14",
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
+                                        "type": "text", 
+                                        "text": "2021-05-02 15:30:14", 
+                                        "wrap": True, 
+                                        "color": "#666666", 
+                                        "size": "sm", 
                                         "flex": 5
                                     }
                                 ]
@@ -310,33 +372,33 @@ def DataInsertToFlexSendMessage(DataList):
                         ]
                     }
                 ]
-            },
+            }, 
             "footer": {
-                "type": "box",
-                "layout": "vertical",
-                "spacing": "sm",
+                "type": "box", 
+                "layout": "vertical", 
+                "spacing": "sm", 
                 "contents": [
                     {
-                        "type": "button",
-                        "style": "link",
-                        "height": "sm",
+                        "type": "button", 
+                        "style": "link", 
+                        "height": "sm", 
                         "action": {
-                            "type": "uri",
-                            "label": "進場",
+                            "type": "uri", 
+                            "label": "進場", 
                             "uri": "https://www.google.com/"
                         }
-                    },
+                    }, 
                     {
-                        "type": "button",
-                        "style": "link",
-                        "height": "sm",
+                        "type": "button", 
+                        "style": "link", 
+                        "height": "sm", 
                         "action": {
-                            "type": "uri",
-                            "label": "離場",
+                            "type": "uri", 
+                            "label": "離場", 
                             "uri": "https://www.google.com/"
                         }
-                    },
-                ],
+                    }
+                ], 
                 "flex": 0
             }
         }
