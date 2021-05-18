@@ -139,7 +139,6 @@ def InsertToDatabase(InsertArray):
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
 
-
 def DeleteToDatabase():
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
