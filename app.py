@@ -152,7 +152,6 @@ def DeleteToDatabase():
     except Exception as DeleteErrorMessage:
         return str(DeleteErrorMessage)
 
-
 def SearchInDatabase():
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
