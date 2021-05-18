@@ -125,7 +125,6 @@ def handle_message(event):
         ReturnMessage = "請依照格式輸入！！"
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
 
-
 def InsertToDatabase(InsertArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
