@@ -170,7 +170,6 @@ def SearchInDatabase():
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
 
-
 def SearchPersonalNameInDatabase(SearchArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
