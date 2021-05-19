@@ -77,7 +77,6 @@ def handle_message(event):
             UserMessageSearchSplitCheck = True
     except Exception as SearchSplitError:
         pass
-    time.sleep(30)
 
     reply_text1 = "1234"
     reply_text = "123"
