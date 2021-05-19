@@ -129,7 +129,6 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
         # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
 
-
 def InsertToDatabase(InsertArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
