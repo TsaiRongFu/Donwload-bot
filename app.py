@@ -94,7 +94,6 @@ def handle_message(event):
 #    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= reply_text), TextSendMessage(text= reply_text1)])
 #    TextSendMessage(text= replyMsg)
 #    GoogleWeb = "https://www.google.com/"
-
 #    line_bot_api.reply_message(event.reply_token, flex_message)
 
     if (str(UserMessage)[0].upper() == "P" and str(UserMessage)[1:len(str(UserMessage))].isdigit() == True):
