@@ -327,8 +327,8 @@ def DataInsertToFlexSendMessage(DataList):
                                 ]
                             }, 
                             {
-						        "type": "separator"
-					        },
+                                "type": "separator"
+                            },
                             {
                                 "type": "box", 
                                 "layout": "baseline", 
