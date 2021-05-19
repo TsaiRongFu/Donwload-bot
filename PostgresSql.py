@@ -1,5 +1,5 @@
 import psycopg2
-conn = psycopg2.connect(database="python_line", user="hamastar", password="hamastar1234", host="127.0.0.1", port="8787")
+conn = psycopg2.connect(database="", user="", password="", host="", port="")
 
 cur = conn.cursor()
 
