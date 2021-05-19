@@ -129,7 +129,6 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
         # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
 
-
 def InsertToDatabase(InsertArray):
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
@@ -143,7 +142,6 @@ def InsertToDatabase(InsertArray):
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
 
-
 def DeleteToDatabase():
     try:
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
@@ -155,7 +153,6 @@ def DeleteToDatabase():
         return DeleteSuccessMessage
     except Exception as DeleteErrorMessage:
         return str(DeleteErrorMessage)
-
 
 def SearchInDatabase():
     try:
@@ -173,7 +170,6 @@ def SearchInDatabase():
         return SearchSuccessMessage
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
-
 
 def SearchPersonalNameInDatabase(SearchArray):
     try:
@@ -409,9 +405,7 @@ def DataInsertToFlexSendMessage(DataList):
     )
     return flex_message
 
-
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
     # ssl_context=('cert.pem', 'key.pem')
-

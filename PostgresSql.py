@@ -35,6 +35,3 @@ print(rows[0][0],rows[0][1],rows[0][2],rows[0][3])
 
 conn.commit()
 cur.close()
-
-
-
