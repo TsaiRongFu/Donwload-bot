@@ -96,6 +96,7 @@ def handle_message(event):
 #    GoogleWeb = "https://www.google.com/"
 
 #    line_bot_api.reply_message(event.reply_token, flex_message)
+
     if (str(UserMessage)[0].upper() == "P" and str(UserMessage)[1:len(str(UserMessage))].isdigit() == True):
         ReturnMessage = SearchPersonalNumberInDatabase(UserMessage.upper())
         if (str(ReturnMessage) == "[]" or str(ReturnMessage) == "list index out of range"):
@@ -110,10 +111,12 @@ def handle_message(event):
     elif (UserMessageSearchSplitCheck == True):
         if (UserMessageSearchSplit[0] == "收尋"):
             ReturnMessage = SearchPersonalNameInDatabase(UserMessageSearchSplit)
-            if (str(ReturnMessage) == "[]" or str(ReturnMessage) == "list index out of range"):
+            if (str(ReturnMessage) == "[]" or str(ReturnMessage) == "list index out of range" or str(ReturnMessage).split(" ")[0] == "unterminated"):
                 NullErrorMessage = "尚未在資料庫收尋到相關資料！"
                 line_bot_api.reply_message(event.reply_token, TextSendMessage(text= NullErrorMessage))
             else:
+                print(ReturnMessage)
+                print(type(ReturnMessage))
                 line_bot_api.reply_message(event.reply_token, ReturnMessage)
     elif (UserMessage == "Delete" or UserMessage == "刪除"):
         ReturnMessage = DeleteToDatabase()
@@ -123,7 +126,8 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
+        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
 
 
 def InsertToDatabase(InsertArray):

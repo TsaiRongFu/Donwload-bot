@@ -1,14 +1,14 @@
 import psycopg2
-#conn = psycopg2.connect(database="", user="", password="", host="", port="")
+conn = psycopg2.connect(database="python_line", user="hamastar", password="hamastar1234", host="127.0.0.1", port="8787")
 
 cur = conn.cursor()
 
 # select 1
-# cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
-# rows = cur.fetchall()
-# for row in rows:
-#     print(str(row))
-# print(rows[0][0],rows[0][1],rows[0][2],rows[0][3])
+cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
+rows = cur.fetchall()
+for row in rows:
+    print(str(row))
+print(rows[0][0],rows[0][1],rows[0][2],rows[0][3])
 
 # select 列出欄位名稱
 # cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
