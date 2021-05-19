@@ -4,11 +4,11 @@ conn = psycopg2.connect(database="", user="", password="", host="", port="")
 cur = conn.cursor()
 
 # select 1
-cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
-rows = cur.fetchall()
-for row in rows:
-    print(str(row))
-print(rows[0][0],rows[0][1],rows[0][2],rows[0][3])
+# cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
+# rows = cur.fetchall()
+# for row in rows:
+#     print(str(row))
+# print(rows[0][0],rows[0][1],rows[0][2],rows[0][3])
 
 # select 列出欄位名稱
 # cur.execute("SELECT * FROM membertable WHERE membername = '蔡榮富'")
