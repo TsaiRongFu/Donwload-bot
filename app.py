@@ -8,6 +8,7 @@ import time
 import configparser  # 匯入config套件
 import hashlib
 import psycopg2
+import requests
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -124,8 +125,9 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
-        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+        UserName = GetPersonaName(str(event.source.user_id))
+        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=UserName + "你媽死了"))
 
 def InsertToDatabase(InsertArray):
     try:
@@ -403,6 +405,11 @@ def DataInsertToFlexSendMessage(DataList):
     )
     return flex_message
 
+def GetPersonaName(userid):
+    URL = "https://api.line.me/v2/bot/profile/" + userid
+    header = {'Authorization': 'Bearer ' + LineBotApiKey + "'"}
+    ReturnRequests = requests.get(URL, headers = header)
+    return str(ReturnRequests.json()['displayName']) 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
