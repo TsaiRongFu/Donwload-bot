@@ -1,5 +1,5 @@
 import psycopg2
-conn = psycopg2.connect(database="python_line", user="python", password="admin306978", host="140.127.22.135", port="8787")
+conn = psycopg2.connect(database="", user="", password="", host="", port="")
 
 cur = conn.cursor()
 
@@ -26,6 +26,13 @@ cur = conn.cursor()
 #        memberNumber TEXT NOT NULL UNIQUE,
 #        memberAvatar TEXT NOT NULL,
 #        memberTicketType TEXT NOT NULL);''')
+
+# creat table
+# ID serial PRIMARY KEY NOT NULL,
+# cur.execute('''CREATE TABLE usertable
+#        ( 
+#        userName TEXT NOT NULL,
+#        userId TEXT NOT NULL UNIQUE);''')
 
 # updata
 # cur.execute("UPDATE membertable set membernumber = 002 where ID=1")
