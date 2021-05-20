@@ -124,11 +124,12 @@ def handle_message(event):
         ReturnMessage = SearchInDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     elif (UserMessage == "把我幹進去"):
-        InsertUserTable(event)
+        ReturnMessage = InsertUserTable(event)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
         UserName = GetPersonaName(str(event.source.user_id))
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text= UserName + "你的ID為：" + str(event.source.user_id)))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text= str(UserName) + "你的ID為：" + str(event.source.user_id)))
         # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=UserName + "你媽死了"))
 
 def InsertToDatabase(InsertArray):
@@ -136,7 +137,7 @@ def InsertToDatabase(InsertArray):
         conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
             config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
-        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES('" + InsertArray[1] + "', '" + InsertArray[2] + "', '" + InsertArray[3] + "', '" + InsertArray[4] + "')")
+        cur.execute("INSERT INTO membertable(membername, membernumber, memberavatar, membertickettype) VALUES ('" + InsertArray[1] + "', '" + InsertArray[2] + "', '" + InsertArray[3] + "', '" + InsertArray[4] + "')")
         conn.commit()
         cur.close()
         InsertSuccessMessage = "會員編號：" + str(InsertArray[1]) + "，新增成功！！"
@@ -419,7 +420,7 @@ def InsertUserTable(event):
             config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
         cur = conn.cursor()
         UserName = GetPersonaName(str(event.source.user_id))
-        cur.execute("INSERT INTO usertable(username, userid) VALUES('" + UserName + "', '" str(event.source.user_id) + "')")
+        cur.execute("INSERT INTO usertable(username, userid) VALUES ('" + str(UserName) + "', '" + str(event.source.user_id) + "')")
         conn.commit()
         cur.close()
         InsertSuccessMessage = "已經把" + str(UserName) + "加入UserTable中！，UserId：" + str(event.source.user_id) + "，新增成功！！"
