@@ -123,11 +123,13 @@ def handle_message(event):
     elif (UserMessage == "收尋" or UserMessage == "Search"):
         ReturnMessage = SearchInDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+    elif (UserMessage == "把我幹進去"):
+        InsertUserTable(event)
     else:
         ReturnMessage = "請依照格式輸入！！"
         UserName = GetPersonaName(str(event.source.user_id))
-        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(event.source.user_id)))
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=UserName + "你媽死了"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text= UserName + "你的ID為：" + str(event.source.user_id)))
+        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=UserName + "你媽死了"))
 
 def InsertToDatabase(InsertArray):
     try:
@@ -409,7 +411,22 @@ def GetPersonaName(userid):
     URL = "https://api.line.me/v2/bot/profile/" + userid
     header = {'Authorization': 'Bearer ' + LineBotApiKey + "'"}
     ReturnRequests = requests.get(URL, headers = header)
-    return str(ReturnRequests.json()['displayName']) 
+    return str(ReturnRequests.json()['displayName'])
+
+def InsertUserTable(event):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        UserName = GetPersonaName(str(event.source.user_id))
+        cur.execute("INSERT INTO usertable(username, userid) VALUES('" + UserName + "', '" str(event.source.user_id) + "')")
+        conn.commit()
+        cur.close()
+        InsertSuccessMessage = "已經把" + str(UserName) + "加入UserTable中！，UserId：" + str(event.source.user_id) + "，新增成功！！"
+        return InsertSuccessMessage
+    except Exception as InsertErrorMessage:
+        return str(InsertErrorMessage)
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 300))
     app.run(host='0.0.0.0', port=port)
