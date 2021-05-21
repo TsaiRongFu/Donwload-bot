@@ -124,8 +124,14 @@ def handle_message(event):
         ReturnMessage = SearchInDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     elif (UserMessage == "把我幹進去"):
-        ReturnMessage = InsertUserTable(event)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+        ReturnMessage = SearchUserIdInDatabase()
+        if (ReturnMessage == True):
+            ReturnMessage = "你擁有資格可以幹進資料庫！"
+            # ReturnMessage = InsertUserTable(event)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
+        else:
+            ReturnMessage = "您的權限不足，詳情請洽管理人員！"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
         UserName = GetPersonaName(str(event.source.user_id))
@@ -199,6 +205,19 @@ def SearchPersonalNumberInDatabase(membernumber):
         return SearchPersonalNumberSuccessMessage
     except Exception as SearchErrorMessage:
         return str(SearchErrorMessage)
+
+def SearchUserIdInDatabase(event):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM usertable WHERE userid = '" + event.source.user_id + "'")
+        SearchUserIdCheck = True
+        conn.commit()
+        cur.close()
+        return SearchUserIdCheck
+    except Exception as SearchErrorMessage:
+        SearchUserIdCheck = False
+        return SearchUserIdCheck
 
 def DataInsertToFlexSendMessage(DataList):
     flex_message = FlexSendMessage(
