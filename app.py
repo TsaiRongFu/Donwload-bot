@@ -80,8 +80,7 @@ def handle_message(event):
         pass
 
     reply_text1 = "1234"
-    re
-
+    r
     sticker_message = StickerSendMessage(
         package_id='6325', sticker_id='10979905')
 #    emoji = {"index": 0, "productId": "5ac2173d031a6752fb806d56", "emojiId": "093"}
