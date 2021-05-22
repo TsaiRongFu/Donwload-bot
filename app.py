@@ -80,7 +80,7 @@ def handle_message(event):
         pass
 
     reply_text1 = "1234"
-    reply_t
+    reply_
 
     sticker_message = StickerSendMessage(
         package_id='6325', sticker_id='10979905')
