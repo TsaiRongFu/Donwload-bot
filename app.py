@@ -220,6 +220,13 @@ def SearchUserIdInDatabase(event):
         return SearchUserIdCheck
 
 def DataInsertToFlexSendMessage(DataList):
+    if (str(DataList[0][3]) == "一般票"):
+        colorCode = "#D94600"
+    elif (str(DataList[0][3]) == "優待票"):
+        colorCode = "#FFD306"
+    elif (str(DataList[0][3]) == "限時票"):
+        colorCode = "#0000C6"
+        
     flex_message = FlexSendMessage(
         alt_text='hello',
         contents={
@@ -273,12 +280,11 @@ def DataInsertToFlexSendMessage(DataList):
                                         "weight": "bold", 
                                         "style": "normal", 
                                         "size": "lg", 
-                                        "color": "#FFA500"
+                                        "color": colorCode
                                     }
                                 ]
                             }
-                        ],
-                        "backgroundColor": "#D2E9FF"
+                        ]
                     }, 
                     {
                         "type": "box", 
