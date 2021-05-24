@@ -130,7 +130,7 @@ def handle_message(event):
             # ReturnMessage = InsertUserTable(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
         else:
-            ReturnMessage = "您的權限不足，詳情請洽管理人員！"
+            ReturnMessage = "您的權限不足，詳情請洽管理人員！！"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
     else:
         ReturnMessage = "請依照格式輸入！！"
