@@ -220,6 +220,7 @@ def SearchUserIdInDatabase(event):
         return SearchUserIdCheck
 
 def DataInsertToFlexSendMessage(DataList):
+    
     if (str(DataList[0][3]) == "一般票"):
         colorCode = "#D94600"
     elif (str(DataList[0][3]) == "優待票"):
