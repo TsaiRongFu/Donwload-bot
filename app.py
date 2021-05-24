@@ -225,7 +225,7 @@ def DataInsertToFlexSendMessage(DataList):
     elif (str(DataList[0][3]) == "優待票"):
         colorCode = "#FFD306"
     elif (str(DataList[0][3]) == "限時票"):
-        colorCode = "#0000C6"
+        colorCode = "#"
         
     flex_message = FlexSendMessage(
         alt_text='hello',
