@@ -221,9 +221,9 @@ def SearchUserIdInDatabase(event):
 
 def DataInsertToFlexSendMessage(DataList):
     if (str(DataList[0][3]) == "一般票"):
-        colorCode = "#D94600"
-    elif (str(DataList[0][3]) == "優待票"):
         colorCode = "#"
+    elif (str(DataList[0][3]) == "優待票"):
+        colorCode = "#FFD306"
     elif (str(DataList[0][3]) == "限時票"):
         colorCode = "#0000C6"
         
