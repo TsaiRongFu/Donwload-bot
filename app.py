@@ -126,7 +126,7 @@ def handle_message(event):
     elif (UserMessage == "把加幹進去"):
         ReturnMessage = SearchUserIdInDatabase(event)
         if (ReturnMessage == True):
-            ReturnMessage = "你擁有資格可以幹進資料庫！"
+            ReturnMessage = "你擁有資格可以加進資料庫！"
             # ReturnMessage = InsertUserTable(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
         else:
