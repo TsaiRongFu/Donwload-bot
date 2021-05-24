@@ -277,7 +277,8 @@ def DataInsertToFlexSendMessage(DataList):
                                     }
                                 ]
                             }
-                        ]
+                        ],
+                        "backgroundColor": "#D2E9FF"
                     }, 
                     {
                         "type": "box", 
