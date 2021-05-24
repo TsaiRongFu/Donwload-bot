@@ -123,7 +123,7 @@ def handle_message(event):
     elif (UserMessage == "收尋" or UserMessage == "Search"):
         ReturnMessage = SearchInDatabase()
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=ReturnMessage))
-    elif (UserMessage == "把我幹進去"):
+    elif (UserMessage == "把加幹進去"):
         ReturnMessage = SearchUserIdInDatabase(event)
         if (ReturnMessage == True):
             ReturnMessage = "你擁有資格可以幹進資料庫！"
