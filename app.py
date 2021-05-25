@@ -38,7 +38,7 @@ def index():
 
 # @app.route('/.well-known/pki-validation/C1AF4ADAC03A064EADE53CD54C66E8F0.txt', methods=["GET"])
 # def send():
-#     file_to_be_sent = "C1AF4ADAC03A064EADE53CD54C
+#     file_to_be_sent = "C1AF4ADAC03A064E
 
 
 
