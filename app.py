@@ -36,7 +36,6 @@ handler = WebhookHandler(WebhookHandlerKey)
 def index():
     return "<p>Line Bot Connection To Herouk Success!</p>"
 
-
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
