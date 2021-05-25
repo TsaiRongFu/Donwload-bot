@@ -36,10 +36,6 @@ handler = WebhookHandler(WebhookHandlerKey)
 def index():
     return "<p>Line Bot Connection To Herouk Success!</p>"
 
-# @app.route('/.well-known/pki-validation/C1AF4ADAC03A064EADE53CD54C66E8F0.txt', methods=["GET"])
-# def send():
-#     file_to_be_sent = "C1AF4ADAC03A064E
-
 
 
 # 監聽所有來自 /callback 的 Post Request
