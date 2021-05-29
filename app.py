@@ -6,9 +6,11 @@ from datetime import datetime
 import configparser  # 匯入config套件
 import requests
 import youtube_dl
+import psycopg2
+import threading
+import time
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-import time
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -60,47 +62,80 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     UserMessage = event.message.text    
-    # p = subprocess.Popen('ls',shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout.read()
-    if (UserMessage.split("-")[0] == "mp3" or UserMessage.split("-")[0] == "音樂"):
-        ydl_opts_mp3 = {
-            'format': "bestaudio/best",
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-            'logger': MyLogger(),
-            'progress_hooks': [my_hook],
-        }
-        try:
-            video_info = get_video_info(UserMessage.split("-")[1])
-            FileName = str(video_info['標題']) + "-" + str(video_info['ID'])
-            with youtube_dl.YoutubeDL(ydl_opts_mp3) as ydl:
-                ydl.download([UserMessage.split("-")[1]])
-                Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
-                FolderId = CheckFileInDrive(event,settings_path)
-                UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp3")
-        except Exception as InsertErrorMessage:
-            Messages = str(InsertErrorMessage)
-    elif (UserMessage.split("-")[0] == "mp4" or UserMessage.split("-")[0] == "影片"):
-        ydl_opts_mp4 = {
-            'format': "bestvideo[ext=mp4]+bestaudio/best",
-            'logger': MyLogger(),
-            'progress_hooks': [my_hook],
-        }
-        try:
-            video_info = get_video_info(UserMessage.split("-")[1])
-            FileName = str(video_info['標題']) + "-" + str(video_info['ID'])
-            with youtube_dl.YoutubeDL(ydl_opts_mp4) as ydl:
-                ydl.download([UserMessage.split("-")[1]])
-                Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
-                FolderId = CheckFileInDrive(event,settings_path)
-                UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp4")
-        except Exception as InsertErrorMessage:
-            Messages = str(InsertErrorMessage)
+    CheckWhereRegister = SerachRegisterInDatabase(event)
+
+    if (CheckWhereRegister == False):
+        if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
+            Messages = RegisterToDatabase(event)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        elif (UserMessage == "使用說明"):
+            Messages = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        else:    
+            Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用，目前開放註冊到5/31。\n\n如您需要註冊請輸入：Register"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+    elif (CheckWhereRegister == True):
+        if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
+            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用說明如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        elif (UserMessage == "使用說明"):
+            Messages = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        elif (UserMessage.split("-")[0] == "mp3" or UserMessage.split("-")[0] == "音樂"):
+            ydl_opts_mp3 = {
+                'format': "bestaudio/best",
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+                'logger': MyLogger(),
+                'progress_hooks': [my_hook],
+            }
+            try:
+                video_info = get_video_info(UserMessage.split("-")[1])
+                FileName = str(video_info['標題'])
+                with youtube_dl.YoutubeDL(ydl_opts_mp3) as ydl:
+                    ydl.download([UserMessage.split("-")[1]])
+                    Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
+                    FolderId = CheckFileInDrive(event,settings_path)
+                    UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp3")
+            except Exception as InsertErrorMessage:
+                Messages = str(InsertErrorMessage)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        elif (UserMessage.split("-")[0] == "mp4" or UserMessage.split("-")[0] == "影片"):
+            ydl_opts_mp4 = {
+                'format': "bestvideo[ext=mp4]+bestaudio/best",
+                'logger': MyLogger(),
+                'progress_hooks': [my_hook],
+            }
+            try:
+                video_info = get_video_info(UserMessage.split("-")[1])
+                FileName = str(video_info['標題'])
+                with youtube_dl.YoutubeDL(ydl_opts_mp4) as ydl:
+                    ydl.download([UserMessage.split("-")[1]])
+                    Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
+                    FolderId = CheckFileInDrive(event,settings_path)
+                    # UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp4")
+                    t = threading.Thread(target = UploadFile, args = (FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp4"))
+                    t.start()
+            except Exception as InsertErrorMessage:
+                Messages = str(InsertErrorMessage)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        else:
+            Messages = UserMessage
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            # gauth = GoogleAuth(settings_file=settings_path)
+            # drive = GoogleDrive(gauth)
+            # file1 = drive.CreateFile({'title': '居家徒手無器材20分鐘臀腿訓練| 無跳躍、對膝友善(含暖身&伸展) At-home 20 min bodyweight lower body workout-qMBvQfmRQ1c.mp4',"parents": [{"kind": "drive#fileLink", "id": '1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR'}]})
+            # file1.Upload() # Upload the file.
+            # file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": '1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR'}]})
+            # filename = "居家徒手無器材20分鐘臀腿訓練| 無跳躍、對膝友善(含暖身&伸展) At-home 20 min bodyweight lower body workout-qMBvQfmRQ1c.mp4"
+            # file2.SetContentFile(filename)
+            # file2.Upload()
     else:
-        # Messages = str(get_video_info(UserMessage))
-        Messages = UserMessage
+        Messages = "請輸入正確格式！"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     # Messages = str(CheckFileInDrive(event,settings_path))
     
     
@@ -140,7 +175,7 @@ def handle_message(event):
     #     print('title: {}, id: {}'.format(file1['title'], file1['id']))
     # Messages = str(CheckFileInDrive(event,settings_path))
 
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+    
 
 class MyLogger(object):
     def debug(self, msg):
@@ -180,22 +215,23 @@ def get_video_info(youtube_url):
     return video_info
 
 def CheckFileInDrive(event, settings_path):
+    parent = "1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR"
     gauth = GoogleAuth(settings_file=settings_path)
     drive = GoogleDrive(gauth)
     userName = GetPersonaName(event.source.user_id)
     FileWhetherExist = False
-    file_list = drive.ListFile({'q': "'root' in parents"}).GetList()
+    file_list = drive.ListFile({'q': "'%s' in parents and trashed=false" % parent}).GetList()
     for file1 in file_list:
         if (str(file1['title']) == userName):
             FileWhetherExist = True
             FolderId = file1['id']
+            print(FolderId)
             return FolderId
-        # print('title: {}, id: {}'.format(file1['title'], file1['id']))
+            
     
     if (FileWhetherExist == False):
         folder_metadata = {
             'title' : userName,
-            # The mimetype defines this new file as a folder, so don't change this.
             'mimeType' : 'application/vnd.google-apps.folder',
             "parents": [
                 {
@@ -223,11 +259,51 @@ def ListFolder(parent, FolderId, settings_path):
             return f['id']
 
 def UploadFile(FolderId, FileName):
-    gauth = GoogleAuth(settings_file=settings_path)
-    drive = GoogleDrive(gauth)
-    file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-    file2.SetContentFile(FileName)
-    file2.Upload()
+    for i in range(60):
+        try:
+            gauth = GoogleAuth(settings_file=settings_path)
+            drive = GoogleDrive(gauth)
+            file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+            # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
+            file2.SetContentFile(FileName)
+            file2.Upload()
+            return
+        except Exception as InsertErrorMessage:
+            print(InsertErrorMessage)
+        time.sleep(5)
+
+def SerachRegisterInDatabase(event):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM lineregister WHERE userid = '" + event.source.user_id + "'")
+        rows = cur.fetchall()
+        if rows == []:
+            SearchUserIdCheck = False
+        else:
+            SearchUserIdCheck = True
+        conn.commit()
+        cur.close()
+        return SearchUserIdCheck
+    except:
+        SearchUserIdCheck = False
+        return SearchUserIdCheck
+
+def RegisterToDatabase(event):
+    try:
+        conn = psycopg2.connect(database=(config['PostgresSQL']['database']), user=(config['PostgresSQL']['user']), password=(
+            config['PostgresSQL']['password']), host=(config['PostgresSQL']['host']), port=(config['PostgresSQL']['port']))
+        cur = conn.cursor()
+        UserName =  GetPersonaName(event.source.user_id)
+        NowTime = datetime.today()
+        NowTime_str = NowTime.strftime("%Y-%m-%d %H:%M:%S")
+        cur.execute("INSERT INTO lineregister(username, userid, userregistertime) VALUES ('" + UserName + "', '" + str(event.source.user_id) + "', '" + NowTime_str + "')")
+        conn.commit()
+        cur.close()
+        InsertSuccessMessage = UserName + "您好！\n\n您的會員編號為：" + str(event.source.user_id) + "，已新增成功！！，\n\n您可以開始使用此系統了！！"
+        return InsertSuccessMessage
+    except Exception as InsertErrorMessage:
+        return str(InsertErrorMessage)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 1234))
