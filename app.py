@@ -81,62 +81,57 @@ def handle_message(event):
         elif (UserMessage == "使用說明"):
             Messages = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-        elif (UserMessage.split("-")[0] == "mp3" or UserMessage.split("-")[0] == "音樂"):
-            ydl_opts_mp3 = {
-                'format': "bestaudio/best",
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                }],
-                'logger': MyLogger(),
-                'progress_hooks': [my_hook],
-            }
+        elif ((UserMessage.split("-")[0]).lower() == "mp3" or UserMessage.split("-")[0] == "音樂"):
             try:
                 video_info = get_video_info(UserMessage.split("-")[1])
+                ydl_opts_mp3 = {
+                    'outtmpl': StringProcess(str(video_info['標題'])) + ".mp3",
+                    'format': "bestaudio/best",
+                    'postprocessors': [{
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': 'mp3',
+                        'preferredquality': '192',
+                    }],
+                    'logger': MyLogger(),
+                    'progress_hooks': [my_hook],
+                }
                 FileName = str(video_info['標題'])
                 with youtube_dl.YoutubeDL(ydl_opts_mp3) as ydl:
                     ydl.download([UserMessage.split("-")[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
-                    UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp3")
+                    # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3")
+                    t = threading.Thread(target = UploadFile, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3"))
+                    t.start()
             except Exception as InsertErrorMessage:
                 Messages = str(InsertErrorMessage)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-        elif (UserMessage.split("-")[0] == "mp4" or UserMessage.split("-")[0] == "影片"):
-            ydl_opts_mp4 = {
-                'format': "bestvideo[ext=mp4]+bestaudio/best",
-                'logger': MyLogger(),
-                'progress_hooks': [my_hook],
-            }
+        elif ((UserMessage.split("-")[0]).lower() == "mp4" or UserMessage.split("-")[0] == "影片"):
             try:
                 video_info = get_video_info(UserMessage.split("-")[1])
+                ydl_opts_mp4 = {
+                    'outtmpl': StringProcess(str(video_info['標題'])) + ".mp4",
+                    'format': "bestvideo[ext=mp4]+bestaudio/best",
+                    'logger': MyLogger(),
+                    'progress_hooks': [my_hook],
+                }
                 FileName = str(video_info['標題'])
                 with youtube_dl.YoutubeDL(ydl_opts_mp4) as ydl:
                     ydl.download([UserMessage.split("-")[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
-                    # UploadFile(FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp4")
-                    t = threading.Thread(target = UploadFile, args = (FolderId,str(video_info['標題']) + "-" + str(video_info['ID']) + ".mp4"))
+                    # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4")
+                    t = threading.Thread(target = UploadFile, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4"))
                     t.start()
             except Exception as InsertErrorMessage:
                 Messages = str(InsertErrorMessage)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         else:
-            Messages = UserMessage
+            Messages = "請輸入正確格式！"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-            # gauth = GoogleAuth(settings_file=settings_path)
-            # drive = GoogleDrive(gauth)
-            # file1 = drive.CreateFile({'title': '居家徒手無器材20分鐘臀腿訓練| 無跳躍、對膝友善(含暖身&伸展) At-home 20 min bodyweight lower body workout-qMBvQfmRQ1c.mp4',"parents": [{"kind": "drive#fileLink", "id": '1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR'}]})
-            # file1.Upload() # Upload the file.
-            # file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": '1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR'}]})
-            # filename = "居家徒手無器材20分鐘臀腿訓練| 無跳躍、對膝友善(含暖身&伸展) At-home 20 min bodyweight lower body workout-qMBvQfmRQ1c.mp4"
-            # file2.SetContentFile(filename)
-            # file2.Upload()
     else:
         Messages = "請輸入正確格式！"
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-    # Messages = str(CheckFileInDrive(event,settings_path))
     
     
 
@@ -258,19 +253,28 @@ def ListFolder(parent, FolderId, settings_path):
         if (f['title'] == FolderId): # if folder
             return f['id']
 
+# def UploadFile(FolderId, FileName):
+#     for i in range(60):
+#         try:
+#             # print(os.popen("dir").read())
+#             # print(FileName)
+#             gauth = GoogleAuth(settings_file=settings_path)
+#             drive = GoogleDrive(gauth)
+#             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+#             # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
+#             file2.SetContentFile(FileName)
+#             file2.Upload()
+#             return
+#         except Exception as InsertErrorMessage:
+#             print(InsertErrorMessage)
+#         time.sleep(5)
+
 def UploadFile(FolderId, FileName):
-    for i in range(60):
-        try:
-            gauth = GoogleAuth(settings_file=settings_path)
-            drive = GoogleDrive(gauth)
-            file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-            # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
-            file2.SetContentFile(FileName)
-            file2.Upload()
-            return
-        except Exception as InsertErrorMessage:
-            print(InsertErrorMessage)
-        time.sleep(5)
+    gauth = GoogleAuth(settings_file=settings_path)
+    drive = GoogleDrive(gauth)
+    file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+    file2.SetContentFile(FileName)
+    file2.Upload()
 
 def SerachRegisterInDatabase(event):
     try:
@@ -304,6 +308,12 @@ def RegisterToDatabase(event):
         return InsertSuccessMessage
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
+
+def StringProcess(title):
+    replaceText = ['\\','/',':','*','?','"','<','>','|']
+    for i in range(len(replaceText)):
+        title = title.replace(replaceText[i], '')
+    return title
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 1234))
