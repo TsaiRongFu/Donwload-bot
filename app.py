@@ -60,7 +60,6 @@ def callback():
 def handle_message(event):
     UserMessage = event.message.text    
     CheckWhereRegister = SerachRegisterInDatabase(event)
-
     if (CheckWhereRegister == False):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
             Messages = RegisterToDatabase(event)
