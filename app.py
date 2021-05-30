@@ -66,8 +66,11 @@ def handle_message(event):
             Messages = RegisterToDatabase(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif (UserMessage == "使用說明"):
-            Messages = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            Messages2 = "範例一 音樂下載\n\nmp3-https://www.youtube.com/watch?v=Sv0OblpjrOw"
+            Messages3 = "範例二 影片下載\n\nmp4-https://www.youtube.com/watch?v=Sv0OblpjrOw"
+            image_map = ["https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp3.jpg","https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp4.jpg"]
+            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages1), TextSendMessage(text= Messages2), ImageSendMessage(original_content_url=image_map[0], preview_image_url=image_map[0]), TextSendMessage(text= Messages3), ImageSendMessage(original_content_url=image_map[1], preview_image_url=image_map[1])])
         else:    
             Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用，目前開放註冊到5/31。\n\n如您需要註冊請輸入：Register"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
@@ -76,8 +79,11 @@ def handle_message(event):
             Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用說明如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif (UserMessage == "使用說明"):
-            Messages = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            Messages2 = "範例一 音樂下載\n\nmp3-https://www.youtube.com/watch?v=Sv0OblpjrOw"
+            Messages3 = "範例二 影片下載\n\nmp4-https://www.youtube.com/watch?v=Sv0OblpjrOw"
+            image_map = ["https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp3.jpg", "https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp4.jpg"]
+            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages1), TextSendMessage(text= Messages2), ImageSendMessage(original_content_url=image_map[0], preview_image_url=image_map[0]), TextSendMessage(text= Messages3), ImageSendMessage(original_content_url=image_map[1], preview_image_url=image_map[1])])
         elif ((UserMessage.split("-")[0]).lower() == "mp3" or UserMessage.split("-")[0] == "音樂"):
             try:
                 video_info = get_video_info(UserMessage.split("-")[1])
@@ -128,7 +134,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     else:
         Messages = "請輸入正確格式！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))   
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
 
 class MyLogger(object):
     def debug(self, msg):
