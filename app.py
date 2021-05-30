@@ -124,7 +124,7 @@ def handle_message(event):
                     Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4")
-                    t = threading.Thread(target = UploadFile, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4"))
+                    t = threading.Thread(target = UploadFile, args = (FolderId, str(StringProcess(str(video_info['標題'])))))
                     t.start()
             except Exception as InsertErrorMessage:
                 Messages = str(InsertErrorMessage)
@@ -220,14 +220,23 @@ def ListFolder(parent, FolderId, settings_path):
 def UploadFile(FolderId, FileName):
     for i in range(60):
         try:
-            gauth = GoogleAuth(settings_file=settings_path)
+            gauth = GoogleAuth(settings_file = settings_path)
             drive = GoogleDrive(gauth)
             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-            file2.SetContentFile(FileName)
+            file2.SetContentFile(FileName + ".mp4")
             file2.Upload()
             return
-        except Exception as InsertErrorMessage:
-            print(InsertErrorMessage)
+        except:
+            try:
+                gauth = GoogleAuth(settings_file = settings_path)
+                drive = GoogleDrive(gauth)
+                file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+                file2.SetContentFile(FileName + ".mkv")
+                file2.Upload()
+                return
+            except Exception as MKVErrorMessage:
+                print(MKVErrorMessage)
+
         time.sleep(5)
 
 # def UploadFile(FolderId, FileName):
