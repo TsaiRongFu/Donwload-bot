@@ -139,7 +139,7 @@ def handle_message(event):
 class MyLogger(object):
     def debug(self, msg):
         pass
-
+    
     def warning(self, msg):
         pass
 
@@ -152,7 +152,6 @@ def my_hook(d):
 
 def get_video_info(youtube_url):
     video_info = {}
-
     with youtube_dl.YoutubeDL() as ydl:
         info = ydl.extract_info(youtube_url, download=False)
         # pprint(info)
