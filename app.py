@@ -56,9 +56,6 @@ def callback():
         abort(400)
     return 'OK'
 
-# 處理訊息
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     UserMessage = event.message.text    
@@ -217,12 +214,9 @@ def ListFolder(parent, FolderId, settings_path):
 def UploadFile(FolderId, FileName):
     for i in range(60):
         try:
-            # print(os.popen("dir").read())
-            # print(FileName)
             gauth = GoogleAuth(settings_file=settings_path)
             drive = GoogleDrive(gauth)
             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-            # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
             file2.SetContentFile(FileName)
             file2.Upload()
             return
@@ -279,4 +273,3 @@ def StringProcess(title):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 1234))
     app.run(host='0.0.0.0', port=port)
-    # ssl_context=('cert.pem', 'key.pem')
