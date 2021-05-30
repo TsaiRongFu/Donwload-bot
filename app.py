@@ -131,46 +131,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     else:
         Messages = "請輸入正確格式！"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-    
-    
-
-    # folder = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": "1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR"}]})
-    # folder_metadata = {
-    #     'title' : 'test',
-    #     # The mimetype defines this new file as a folder, so don't change this.
-    #     'mimeType' : 'application/vnd.google-apps.folder',
-    #     "parents": [
-    #         {
-    #             "kind": "drive#fileLink", 
-    #             "id": "1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR"
-    #         }
-    #     ]
-    # }
-    # folder = drive.CreateFile(folder_metadata)
-    # folder.Upload()
-
-    
-    # parent = "1-GUcBDs9zeH9mwqkTMbwXiztv1QFJigR"
-
-    # def ListFolder(parent):
-    #     filelist=[]
-    #     file_list = drive.ListFile({'q': "'%s' in parents and trashed=false" % parent}).GetList()
-    #     for f in file_list:
-    #         if f['mimeType']=='application/vnd.google-apps.folder': # if folder
-    #             filelist.append({"id":f['id'],"title":f['title'],"list":ListFolder(f['id'])})
-    #         else:
-    #             filelist.append(f['title'])
-    #     return filelist
-
-    # print(ListFolder(parent))
-
-    # file_list = drive.ListFile({'q': "'root' in parents"}).GetList()
-    # for file1 in file_list:
-    #     print('title: {}, id: {}'.format(file1['title'], file1['id']))
-    # Messages = str(CheckFileInDrive(event,settings_path))
-
-    
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))   
 
 class MyLogger(object):
     def debug(self, msg):
@@ -253,28 +214,28 @@ def ListFolder(parent, FolderId, settings_path):
         if (f['title'] == FolderId): # if folder
             return f['id']
 
-# def UploadFile(FolderId, FileName):
-#     for i in range(60):
-#         try:
-#             # print(os.popen("dir").read())
-#             # print(FileName)
-#             gauth = GoogleAuth(settings_file=settings_path)
-#             drive = GoogleDrive(gauth)
-#             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-#             # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
-#             file2.SetContentFile(FileName)
-#             file2.Upload()
-#             return
-#         except Exception as InsertErrorMessage:
-#             print(InsertErrorMessage)
-#         time.sleep(5)
-
 def UploadFile(FolderId, FileName):
-    gauth = GoogleAuth(settings_file=settings_path)
-    drive = GoogleDrive(gauth)
-    file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
-    file2.SetContentFile(FileName)
-    file2.Upload()
+    for i in range(60):
+        try:
+            # print(os.popen("dir").read())
+            # print(FileName)
+            gauth = GoogleAuth(settings_file=settings_path)
+            drive = GoogleDrive(gauth)
+            file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+            # file2 = drive.CreateFile({'title': FileName,"parents": [{"kind": "drive#fileLink", "id":  FolderId}]})
+            file2.SetContentFile(FileName)
+            file2.Upload()
+            return
+        except Exception as InsertErrorMessage:
+            print(InsertErrorMessage)
+        time.sleep(5)
+
+# def UploadFile(FolderId, FileName):
+#     gauth = GoogleAuth(settings_file=settings_path)
+#     drive = GoogleDrive(gauth)
+#     file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
+#     file2.SetContentFile(FileName)
+#     file2.Upload()
 
 def SerachRegisterInDatabase(event):
     try:
