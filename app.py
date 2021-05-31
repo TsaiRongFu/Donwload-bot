@@ -60,11 +60,12 @@ def callback():
 def handle_message(event):
     UserMessage = event.message.text    
     CheckWhereRegister = SerachRegisterInDatabase(event)
+
     if (CheckWhereRegister == False):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
             Messages = RegisterToDatabase(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-        elif (UserMessage == "使用說明"):
+        elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             Messages2 = "範例一 音樂下載\n\nmp3-https://www.youtube.com/watch?v=Sv0OblpjrOw"
             Messages3 = "範例二 影片下載\n\nmp4-https://www.youtube.com/watch?v=Sv0OblpjrOw"
@@ -77,7 +78,7 @@ def handle_message(event):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
             Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用說明如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-        elif (UserMessage == "使用說明"):
+        elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             Messages2 = "範例一 音樂下載\n\nmp3-https://www.youtube.com/watch?v=Sv0OblpjrOw"
             Messages3 = "範例二 影片下載\n\nmp4-https://www.youtube.com/watch?v=Sv0OblpjrOw"
@@ -138,7 +139,7 @@ def handle_message(event):
 class MyLogger(object):
     def debug(self, msg):
         pass
-    
+
     def warning(self, msg):
         pass
 
@@ -151,6 +152,7 @@ def my_hook(d):
 
 def get_video_info(youtube_url):
     video_info = {}
+
     with youtube_dl.YoutubeDL() as ydl:
         info = ydl.extract_info(youtube_url, download=False)
         # pprint(info)
