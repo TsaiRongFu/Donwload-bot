@@ -180,14 +180,14 @@ def CheckFileInDrive(event, settings_path):
     userName = GetPersonaName(event.source.user_id)
     FileWhetherExist = False
     file_list = drive.ListFile({'q': "'%s' in parents and trashed=false" % parent}).GetList()
+    
     for file1 in file_list:
         if (str(file1['title']) == userName):
             FileWhetherExist = True
             FolderId = file1['id']
             print(FolderId)
             return FolderId
-            
-    
+        
     if (FileWhetherExist == False):
         folder_metadata = {
             'title' : userName,
