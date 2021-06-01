@@ -72,11 +72,11 @@ def handle_message(event):
             image_map = ["https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp3.jpg","https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp4.jpg"]
             line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages1), TextSendMessage(text= Messages2), ImageSendMessage(original_content_url=image_map[0], preview_image_url=image_map[0]), TextSendMessage(text= Messages3), ImageSendMessage(original_content_url=image_map[1], preview_image_url=image_map[1])])
         else:    
-            Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用，目前開放註冊到5/31。\n\n如您需要註冊請輸入：Register"
+            Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用\n\n目前開放註冊到6/04\n\n如您需要註冊請輸入：Register"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     elif (CheckWhereRegister == True):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
-            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用說明如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/Gmdkrd\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n使用範例如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
@@ -86,7 +86,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages1), TextSendMessage(text= Messages2), ImageSendMessage(original_content_url=image_map[0], preview_image_url=image_map[0]), TextSendMessage(text= Messages3), ImageSendMessage(original_content_url=image_map[1], preview_image_url=image_map[1])])
         elif ((UserMessage.split("-")[0]).lower() == "mp3" or UserMessage.split("-")[0] == "音樂"):
             try:
-                video_info = get_video_info(UserMessage.split("-")[1])
+                video_info = get_video_info(UserMessage.split("-", 1)[1])
                 ydl_opts_mp3 = {
                     'outtmpl': StringProcess(str(video_info['標題'])) + ".mp3",
                     'format': "bestaudio/best",
@@ -100,8 +100,8 @@ def handle_message(event):
                 }
                 FileName = str(video_info['標題'])
                 with youtube_dl.YoutubeDL(ydl_opts_mp3) as ydl:
-                    ydl.download([UserMessage.split("-")[1]])
-                    Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
+                    ydl.download([UserMessage.split("-", 1)[1]])
+                    Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3")
                     t = threading.Thread(target = UploadFileMp3, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3"))
@@ -111,7 +111,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif ((UserMessage.split("-")[0]).lower() == "mp4" or UserMessage.split("-")[0] == "影片"):
             try:
-                video_info = get_video_info(UserMessage.split("-")[1])
+                video_info = get_video_info(UserMessage.split("-", 1)[1])
                 ydl_opts_mp4 = {
                     'outtmpl': StringProcess(str(video_info['標題'])) + ".mp4",
                     'format': "bestvideo[ext=mp4]+bestaudio/best",
@@ -120,8 +120,8 @@ def handle_message(event):
                 }
                 FileName = str(video_info['標題'])
                 with youtube_dl.YoutubeDL(ydl_opts_mp4) as ydl:
-                    ydl.download([UserMessage.split("-")[1]])
-                    Messages = FileName + "，下載完畢！\n\n正在上傳，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
+                    ydl.download([UserMessage.split("-", 1)[1]])
+                    Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4")
                     t = threading.Thread(target = UploadFileMp4, args = (FolderId, str(StringProcess(str(video_info['標題'])))))
@@ -130,10 +130,10 @@ def handle_message(event):
                 Messages = str(InsertErrorMessage)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         else:
-            Messages = "請輸入正確格式！"
+            Messages = "請輸入正確格式！\n\n如果您忘記指令請輸入 \"使用教學\""
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     else:
-        Messages = "請輸入正確格式！"
+        Messages = "請輸入正確格式！\n\n如果您忘記指令請輸入 \"使用教學\""
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
 
 class MyLogger(object):
@@ -286,7 +286,7 @@ def RegisterToDatabase(event):
         cur.execute("INSERT INTO lineregister(username, userid, userregistertime) VALUES ('" + UserName + "', '" + str(event.source.user_id) + "', '" + NowTime_str + "')")
         conn.commit()
         cur.close()
-        InsertSuccessMessage = UserName + "您好！\n\n您的會員編號為：" + str(event.source.user_id) + "，已新增成功！！，\n\n您可以開始使用此系統了！！"
+        InsertSuccessMessage = UserName + "您好！\n\n您的會員編號為：" + str(event.source.user_id) + "\n\n已註冊成功！！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/Gmdkrd\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n您可以開始使用此系統了！！"
         return InsertSuccessMessage
     except Exception as InsertErrorMessage:
         return str(InsertErrorMessage)
