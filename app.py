@@ -100,7 +100,7 @@ def handle_message(event):
                     ydl.download([UserMessage.split("-", 1)[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
-                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
+                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 下載完成！")
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3")
                     t = threading.Thread(target = UploadFileMp3, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3", event, UserMessage))
                     t.start()
@@ -122,7 +122,7 @@ def handle_message(event):
                     ydl.download([UserMessage.split("-", 1)[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
-                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
+                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 下載完成！")
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4")
                     t = threading.Thread(target = UploadFileMp4, args = (FolderId, str(StringProcess(str(video_info['標題']))), event, UserMessage))
                     t.start()
@@ -240,7 +240,7 @@ def UploadFileMp4(FolderId, FileName, event, UserMessage):
                 WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 上傳成功！！")
                 return
             except Exception as MKVErrorMessage:
-                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(MKVErrorMessage))
+                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error Messages ：\"" + str(MKVErrorMessage) + "\"")
                 print(MKVErrorMessage)
         time.sleep(5)
 
@@ -255,7 +255,7 @@ def UploadFileMp3(FolderId, FileName, event, UserMessage):
             WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 上傳成功！！")
             return
         except Exception as ErrorMessage:
-            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(ErrorMessage))
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error Messages ：\"" + str(ErrorMessage) + "\"")
             print(ErrorMessage)
         time.sleep(5)
 
@@ -315,8 +315,8 @@ def SendDescription(event):
 def WriteLogFile(content):
     NowTime = datetime.today()
     NowTime_str = NowTime.strftime("%Y-%m-%d %H:%M:%S")
-    LogFile = open("./log/UserUselog.txt",'a+')
-    LogFile.write("\n[" + NowTime_str + "]" + content)
+    LogFile = open("./log/UserUselog.txt", 'a', encoding='utf-8')
+    LogFile.write("\n[" + NowTime_str + "]" + str(content))
     LogFile.close()
 
 if __name__ == "__main__":
