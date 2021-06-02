@@ -65,18 +65,22 @@ def handle_message(event):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
             Messages = RegisterToDatabase(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-            WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser")
+            WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser ， User_ID：" + event.source.user_id)
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             SendDescription(event)
+            WriteLogFile(GetPersonaName(event.source.user_id) + " use " + UserMessage)
         else:    
             Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用\n\n目前開放註冊到6/04\n\n如您需要註冊請輸入：Register"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
     elif (CheckWhereRegister == True):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
-            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/nonY0X\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n使用範例如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊過了！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/nonY0X\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n使用範例如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send \"" + UserMessage + "\" but user already register")
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             SendDescription(event)
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
         elif ((UserMessage.split("-")[0]).lower() == "mp3" or UserMessage.split("-")[0] == "音樂"):
             try:
                 video_info = get_video_info(UserMessage.split("-", 1)[1])
@@ -96,10 +100,12 @@ def handle_message(event):
                     ydl.download([UserMessage.split("-", 1)[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
+                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3")
-                    t = threading.Thread(target = UploadFileMp3, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3"))
+                    t = threading.Thread(target = UploadFileMp3, args = (FolderId, str(StringProcess(str(video_info['標題']))) + ".mp3", event, UserMessage))
                     t.start()
             except Exception as InsertErrorMessage:
+                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(InsertErrorMessage))
                 Messages = str(InsertErrorMessage)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif ((UserMessage.split("-")[0]).lower() == "mp4" or UserMessage.split("-")[0] == "影片"):
@@ -116,18 +122,22 @@ def handle_message(event):
                     ydl.download([UserMessage.split("-", 1)[1]])
                     Messages = FileName + "，下載完畢！\n\n正在上傳(依照檔案大小所需時間不同)，稍後可以在以下網址，您的資料夾內找到檔案！\n\nhttps://tinyurl.com/3vr8fus3"
                     FolderId = CheckFileInDrive(event,settings_path)
+                    WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
                     # UploadFile(FolderId, str(StringProcess(str(video_info['標題']))) + ".mp4")
-                    t = threading.Thread(target = UploadFileMp4, args = (FolderId, str(StringProcess(str(video_info['標題'])))))
+                    t = threading.Thread(target = UploadFileMp4, args = (FolderId, str(StringProcess(str(video_info['標題']))), event, UserMessage))
                     t.start()
             except Exception as InsertErrorMessage:
+                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(InsertErrorMessage))
                 Messages = str(InsertErrorMessage)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         else:
             Messages = "請輸入正確格式！\n\n如果您忘記指令請輸入 \"使用教學\""
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
     else:
         Messages = "請輸入正確格式！\n\n如果您忘記指令請輸入 \"使用教學\""
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+        WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
 
 class MyLogger(object):
     def debug(self, msg):
@@ -210,7 +220,7 @@ def ListFolder(parent, FolderId, settings_path):
         if (f['title'] == FolderId): # if folder
             return f['id']
 
-def UploadFileMp4(FolderId, FileName):
+def UploadFileMp4(FolderId, FileName, event, UserMessage):
     for i in range(60):
         try:
             gauth = GoogleAuth(settings_file = settings_path)
@@ -218,6 +228,7 @@ def UploadFileMp4(FolderId, FileName):
             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
             file2.SetContentFile(FileName + ".mp4")
             file2.Upload()
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 上傳成功！！")
             return
         except:
             try:
@@ -226,12 +237,14 @@ def UploadFileMp4(FolderId, FileName):
                 file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
                 file2.SetContentFile(FileName + ".mkv")
                 file2.Upload()
+                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 上傳成功！！")
                 return
             except Exception as MKVErrorMessage:
+                WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(MKVErrorMessage))
                 print(MKVErrorMessage)
         time.sleep(5)
 
-def UploadFileMp3(FolderId, FileName):
+def UploadFileMp3(FolderId, FileName, event, UserMessage):
     for i in range(60):
         try:
             gauth = GoogleAuth(settings_file = settings_path)
@@ -239,8 +252,10 @@ def UploadFileMp3(FolderId, FileName):
             file2 = drive.CreateFile({"parents": [{"kind": "drive#fileLink", "id": FolderId}]})
             file2.SetContentFile(FileName)
             file2.Upload()
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "，" + FileName + " 上傳成功！！")
             return
         except Exception as ErrorMessage:
+            WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage + "but system error ，Error messages" + str(ErrorMessage))
             print(ErrorMessage)
         time.sleep(5)
 
@@ -301,7 +316,7 @@ def WriteLogFile(content):
     NowTime = datetime.today()
     NowTime_str = NowTime.strftime("%Y-%m-%d %H:%M:%S")
     LogFile = open("./log/UserUselog.txt",'a+')
-    LogFile.write("[" + NowTime_str + "]" + content)
+    LogFile.write("\n[" + NowTime_str + "]" + content)
     LogFile.close()
 
 if __name__ == "__main__":
