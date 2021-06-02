@@ -24,10 +24,10 @@ app = Flask(__name__)
 cst_tz = timezone('Asia/Taipei')  # +8時區
 utc_tz = timezone('UTC')
 config = configparser.ConfigParser()
-config.read("./config.ini")
+config.read("./key/config.ini")
 LineBotApiKey = (config['LineToken']['LineBotApiKey'])
 WebhookHandlerKey = (config['LineToken']['WebhookHandler'])
-settings_path = 'settings.yaml'
+settings_path = './key/settings.yaml'
 # gauth = GoogleAuth(settings_file=settings_path)
 # # gauth.LocalWebserverAuth()
 # drive = GoogleDrive(gauth)
@@ -76,7 +76,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
     elif (CheckWhereRegister == True):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
-            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/Gmdkrd\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n使用範例如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
+            Messages = str(GetPersonaName(event.source.user_id)) + "，您已經註冊成功了！\n\n使用前還請再次詳閱使用條款\nhttps://reurl.cc/nonY0X\n\n使用過程中有任何問題請洽開發人員網站提出Issues\nhttps://git.io/Donwload-Bot\n\n使用範例如下：\n\n如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             Messages1 = "如果要下載影片請輸入:mp4-影片網址\n\n如果要音樂影片請輸入:mp3-音樂網址"
