@@ -65,6 +65,7 @@ def handle_message(event):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
             Messages = RegisterToDatabase(event)
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser")
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             SendDescription(event)
         else:    
@@ -295,6 +296,13 @@ def SendDescription(event):
     Messages3 = "範例二 影片下載\n\nmp4-https://www.youtube.com/watch?v=Sv0OblpjrOw"
     image_map = ["https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp3.jpg", "https://raw.githubusercontent.com/TsaiRongFu/Video-Donwload-bot/main/image/mp4.jpg"]
     line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages1), TextSendMessage(text= Messages2), ImageSendMessage(original_content_url=image_map[0], preview_image_url=image_map[0]), TextSendMessage(text= Messages3), ImageSendMessage(original_content_url=image_map[1], preview_image_url=image_map[1])])
+
+def WriteLogFile(content):
+    NowTime = datetime.today()
+    NowTime_str = NowTime.strftime("%Y-%m-%d %H:%M:%S")
+    LogFile = open("./log/UserUselog.txt",'a+')
+    LogFile.write("[" + NowTime_str + "]" + content)
+    LogFile.close()
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 1234))
