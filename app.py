@@ -188,7 +188,6 @@ def CheckFileInDrive(event, settings_path):
         if (str(file1['title']) == userName):
             FileWhetherExist = True
             FolderId = file1['id']
-            print(FolderId)
             return FolderId
         
     if (FileWhetherExist == False):
