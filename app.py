@@ -316,7 +316,7 @@ def WriteLogFile(content):
     NowTime = datetime.today()
     NowTime_str = NowTime.strftime("%Y-%m-%d %H:%M:%S")
     LogFile = open("./log/UserUselog.txt", 'a', encoding='utf-8')
-    LogFile.write("\n[" + NowTime_str + "]" + str(content))
+    LogFile.write("\n[" + NowTime_str + "]" + " " + str(content))
     LogFile.close()
 
 if __name__ == "__main__":
