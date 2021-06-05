@@ -63,8 +63,12 @@ def handle_message(event):
 
     if (CheckWhereRegister == False):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
-            Messages = "註冊時間開放至截止2021-06-04，目前不在開放時間內！\n\n有任何問題請洽開發人員！\n\n聯絡方式為使用條款網站內下圖所示之地方："
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            # 關閉註冊功能
+            Messages = "註冊時間開放至2021-06-04，目前不在開放時間內！\n\n有任何問題請洽開發人員！\n\n聯絡方式為使用條款網站內，下圖所示之地方：\n\n使用條款：https://reurl.cc/nonY0X"
+            image_map = "https://raw.githubusercontent.com/TsaiRongFu/Donwload-bot/main/image/StopRegisterFunction.png"
+            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text= Messages), ImageSendMessage(original_content_url=image_map, preview_image_url=image_map)])
+            WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser ， User_ID：" + event.source.user_id + " ， But now not register time." )
+            # 開啟註冊功能
             # Messages = RegisterToDatabase(event)
             # line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
             # WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser ， User_ID：" + event.source.user_id)
