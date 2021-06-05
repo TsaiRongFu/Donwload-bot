@@ -63,14 +63,16 @@ def handle_message(event):
 
     if (CheckWhereRegister == False):
         if (UserMessage.lower() == "register" or UserMessage.lower() == "註冊"):
-            Messages = RegisterToDatabase(event)
+            Messages = "註冊時間開放至截止2021-06-04，目前不在開放時間內！\n\n有任何問題請洽開發人員！\n\n聯絡方式為使用條款網站內下圖所示之地方："
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
-            WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser ， User_ID：" + event.source.user_id)
+            # Messages = RegisterToDatabase(event)
+            # line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
+            # WriteLogFile(GetPersonaName(event.source.user_id) + " use regiser ， User_ID：" + event.source.user_id)
         elif (UserMessage == "使用說明" or UserMessage == "使用教學"):
             SendDescription(event)
             WriteLogFile(GetPersonaName(event.source.user_id) + " use " + UserMessage)
         else:    
-            Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用\n\n目前開放註冊到6/04\n\n如您需要註冊請輸入：Register"
+            Messages = str(GetPersonaName(event.source.user_id))+ "" + "你好！\n\n目前此功能只提供給註冊用戶使用\n\n目前開放註冊到2021-06-04\n\n如您需要註冊請輸入：Register"
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text = Messages))
             WriteLogFile(GetPersonaName(event.source.user_id) + " send " + UserMessage)
     elif (CheckWhereRegister == True):
