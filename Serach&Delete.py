@@ -42,4 +42,3 @@ else:
         print(DeleteFileNameList[j])
         
     WriteLogFile(content)
-    
