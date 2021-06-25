@@ -28,7 +28,7 @@ config.read("./key/config.ini")
 LineBotApiKey = (config['LineToken']['LineBotApiKey'])
 WebhookHandlerKey = (config['LineToken']['WebhookHandler'])
 settings_path = './key/settings.yaml'
-# gauth = GoogleAuth(settings_file=settings_path)
+
 
 
 line_bot_api = LineBotApi(LineBotApiKey)
