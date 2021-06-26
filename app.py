@@ -31,7 +31,6 @@ settings_path = './key/settings.yaml'
 # gauth = GoogleAuth(settings_file=settings_path)
 
 
-
 line_bot_api = LineBotApi(LineBotApiKey)
 
 handler = WebhookHandler(WebhookHandlerKey)
