@@ -217,7 +217,7 @@ def ListFolder(parent, FolderId, settings_path):
     drive = GoogleDrive(gauth)
     file_list = drive.ListFile({'q': "'%s' in parents and trashed=false" % parent}).GetList()
     for f in file_list:
-        if (f['title'] == FolderId):  
+        if (f['title'] == FolderId): 
             return f['id']
 
 def UploadFileMp4(FolderId, FileName, event, UserMessage):
