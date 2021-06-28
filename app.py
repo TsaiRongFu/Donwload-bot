@@ -21,6 +21,7 @@ from linebot.exceptions import (
 from linebot.models import *
 
 app = Flask(__name__)
+
 cst_tz = timezone('Asia/Taipei')  # +8時區
 utc_tz = timezone('UTC')
 
