@@ -30,7 +30,7 @@ WebhookHandlerKey = (config['LineToken']['WebhookHandler'])
 settings_path = './key/settings.yaml'
 # gauth = GoogleAuth(settings_file=settings_path)
 # gauth.LocalWebserverAuth()
-# drive = GoogleDrive(gauth)
+
 
 line_bot_api = LineBotApi(LineBotApiKey)
 
