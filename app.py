@@ -160,7 +160,6 @@ def get_video_info(youtube_url):
 
     with youtube_dl.YoutubeDL() as ydl:
         info = ydl.extract_info(youtube_url, download=False)
-
         video_info['ID'] = info.get('id')
         video_info['標題'] = info.get('title')
         video_info['影片縮圖'] = info.get('thumbnail')
