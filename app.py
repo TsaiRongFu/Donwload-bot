@@ -39,7 +39,6 @@ handler = WebhookHandler(WebhookHandlerKey)
 def index():
     return "<p>Line Bot Connection To Ngrok Success!</p>"
 
-
 @app.route("/callback", methods=['POST'])
 def callback():
 
