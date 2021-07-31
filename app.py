@@ -9,6 +9,11 @@ import youtube_dl
 import psycopg2
 import threading
 import time
+from bs4 import BeautifulSoup
+from selenium import webdriver
+import base64
+import shutil
+import json
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
@@ -28,6 +33,7 @@ config.read("./key/config.ini")
 # LineBotApiKey = (config['LineToken_Youtube_dl']['LineBotApiKey'])
 # WebhookHandlerKey = (config['LineToken_Youtube_dl']['WebhookHandler'])
 settings_path = './key/Youtube_dl/settings.yaml'
+settings_paths = './key/URL_Download/settings.yaml'
 # gauth = GoogleAuth(settings_file=settings_path)
 # # gauth.LocalWebserverAuth()
 # drive = GoogleDrive(gauth)
@@ -81,12 +87,21 @@ def handle_message_URL_Download(event):
     UserMessage = event.message.text
     try:
         if(UserMessage.split('/')[2].lower() == "risu.io"):
-            image_message = ImageSendMessage(
-                original_content_url='https://lh6.googleusercontent.com/YAfS0Rfed6WE6UG9Ed3q00oQI93f2zcHGxi6bP513R2DYzB2qqyrtco-PsEK6_-oYtU_AIDwIef5jr7OJFrg=w1920-h937',
-                preview_image_url='https://lh6.googleusercontent.com/YAfS0Rfed6WE6UG9Ed3q00oQI93f2zcHGxi6bP513R2DYzB2qqyrtco-PsEK6_-oYtU_AIDwIef5jr7OJFrg=w1920-h937'
-            )
-            line_bot_api_URL_Download.reply_message(event.reply_token, image_message)
+            # image_message = ImageSendMessage(
+            #     original_content_url='https://lh6.googleusercontent.com/YAfS0Rfed6WE6UG9Ed3q00oQI93f2zcHGxi6bP513R2DYzB2qqyrtco-PsEK6_-oYtU_AIDwIef5jr7OJFrg=w1920-h937',
+            #     preview_image_url='https://lh6.googleusercontent.com/YAfS0Rfed6WE6UG9Ed3q00oQI93f2zcHGxi6bP513R2DYzB2qqyrtco-PsEK6_-oYtU_AIDwIef5jr7OJFrg=w1920-h937'
+            # )
+            # line_bot_api_URL_Download.reply_message(event.reply_token, image_message)
             # line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "https://risu.io"))
+            # UploadFileRisuImage()
+            # line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "上傳成功！"))
+            
+            URL = UserMessage.split(' ')[0]
+            Password = UserMessage.split(' ')[1]
+            Confirm_URL = URL + '/confirm.json'
+
+            WebPostCode = Postrisu(Confirm_URL, Password)
+            line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = str(WebPostCode)))
         elif(UserMessage.split('/')[2].lower() == "ppt.cc"):
             line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "https://ppt.cc"))
         elif(UserMessage.split('/')[2].lower() == "imgus.cc"):
@@ -310,6 +325,12 @@ def UploadFileMp3(FolderId, FileName, event, UserMessage):
             print(ErrorMessage)
         time.sleep(5)
 
+def UploadFileRisuImage():
+    gauth = GoogleAuth(settings_file = settings_paths)
+    drive = GoogleDrive(gauth)
+    file1 = drive.CreateFile({'title': 'Hello.txt'})
+    file1.Upload()
+
 # def UploadFile(FolderId, FileName):
 #     gauth = GoogleAuth(settings_file=settings_path)
 #     drive = GoogleDrive(gauth)
@@ -369,6 +390,40 @@ def WriteLogFile(content):
     LogFile = open("./log/UserUselog.txt", 'a', encoding='utf-8')
     LogFile.write("\n[" + NowTime_str + "]" + " " + str(content))
     LogFile.close()
+
+def Postrisu(URL, Password):
+    session_requests = requests.session()
+
+    firstGet = session_requests.get(URL)
+    soup = BeautifulSoup(firstGet.text, 'html.parser')
+
+    firstGetTexts = soup.find("meta", {"name":"csrf-token"})
+    csrftoken = firstGetTexts['content']
+
+    data ={
+        "password": Password
+    }
+    headers = {
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
+        "x-csrf-token": csrftoken
+    }
+    firstPost = session_requests.post(URL, headers = headers, data = data)
+
+    if(len(firstPost.text) == 0):
+        return "您的網址輸入錯誤或是網址時效已過！"
+    else:
+        print(json.loads(firstPost.text)['lock'])
+        if(json.loads(firstPost.text)['lock'] == False):
+            return "您的輸入的密碼錯誤請重新輸入！"
+        elif(json.loads(firstPost.text)['lock'] == True):
+            if(json.loads(firstPost.text)['file_infos'][0]['content_type'] == "image/jpeg"):
+                return "image"
+            elif(json.loads(firstPost.text)['file_infos'][0]['content_type'] == "video/mp4"):
+                return "video"
+            else:
+                return "content_type未知型別，請聯絡開發人員！"
+        else:
+            return "lock未知型別，請聯絡開發人員！"
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6969))
