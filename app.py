@@ -101,7 +101,12 @@ def handle_message_URL_Download(event):
             Confirm_URL = URL + '/confirm.json'
 
             WebPostCode = Postrisu(Confirm_URL, Password)
-            line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = str(WebPostCode)))
+            if(WebPostCode =="image"):
+                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "抓image"))
+            elif(WebPostCode =="video"):
+                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "抓video"))
+            else:
+                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = str(WebPostCode)))
         elif(UserMessage.split('/')[2].lower() == "ppt.cc"):
             line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "https://ppt.cc"))
         elif(UserMessage.split('/')[2].lower() == "imgus.cc"):
