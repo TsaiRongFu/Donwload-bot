@@ -101,12 +101,8 @@ def handle_message_URL_Download(event):
             Confirm_URL = URL + '/confirm.json'
 
             WebPostCode = Postrisu(Confirm_URL, Password)
-            if(WebPostCode =="image"):
-                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "抓image"))
-            elif(WebPostCode =="video"):
-                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "抓video"))
-            else:
-                line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = str(WebPostCode)))
+            
+            line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = str(WebPostCode)))
         elif(UserMessage.split('/')[2].lower() == "ppt.cc"):
             line_bot_api_URL_Download.reply_message(event.reply_token, TextSendMessage(text = "https://ppt.cc"))
         elif(UserMessage.split('/')[2].lower() == "imgus.cc"):
@@ -415,20 +411,26 @@ def Postrisu(URL, Password):
     firstPost = session_requests.post(URL, headers = headers, data = data)
 
     if(len(firstPost.text) == 0):
-        return "您的網址輸入錯誤或是網址時效已過！"
+        firstPostContent = "您的網址輸入錯誤或是網址時效已過！"
     else:
-        print(json.loads(firstPost.text)['lock'])
         if(json.loads(firstPost.text)['lock'] == False):
-            return "您的輸入的密碼錯誤請重新輸入！"
+            firstPostContent = "您的輸入的密碼錯誤請重新輸入！"
         elif(json.loads(firstPost.text)['lock'] == True):
             if(json.loads(firstPost.text)['file_infos'][0]['content_type'] == "image/jpeg"):
-                return "image"
+                firstPostContent = "image"
             elif(json.loads(firstPost.text)['file_infos'][0]['content_type'] == "video/mp4"):
-                return "video"
+                firstPostContent = "video"
             else:
-                return "content_type未知型別，請聯絡開發人員！"
+                firstPostContent = "content_type未知型別，請聯絡開發人員！"
         else:
-            return "lock未知型別，請聯絡開發人員！"
+            firstPostContent = "lock未知型別，請聯絡開發人員！"
+
+    if(firstPostContent == "image"):
+        return "image"
+    elif(firstPostContent == "video"):
+        return "video"
+    else:
+        return firstPostContent
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6969))
