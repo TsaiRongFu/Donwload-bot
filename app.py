@@ -426,12 +426,13 @@ def Postrisu(URL, Password):
             firstPostContent = "lock未知型別，請聯絡開發人員！"
 
     if(firstPostContent == "image"):
+        print("做下載image的事情")
         return "image"
     elif(firstPostContent == "video"):
         return "video"
     else:
         return firstPostContent
-
+        
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6969))
     app.run(host='0.0.0.0', port=port)
