@@ -429,6 +429,7 @@ def Postrisu(URL, Password):
         print("做下載image的事情")
         return "image"
     elif(firstPostContent == "video"):
+        print("做下載video的事情")
         return "video"
     else:
         return firstPostContent
